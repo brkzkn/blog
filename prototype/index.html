@@ -1,0 +1,72 @@
+<!doctype html><html lang="en"><head><script>(function(){let t='system',l='en';try{t=localStorage.getItem('burak-theme')||t;l=localStorage.getItem('burak-language')||l}catch{}if(!['light','dark','system'].includes(t))t='system';if(!['en','tr'].includes(l))l='en';window.__burakPrefs={theme:t,lang:l};document.documentElement.lang=l;document.documentElement.dataset.theme=t==='system'?(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'):t})();</script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Burak Özkan — Architecture, Projects &amp; Life</title><meta name="description" content="Burak Özkan’s personal space for architecture, projects and life. Design preview with sample content."><link rel="stylesheet" href="assets/site.css"></head><body><header class="nav"><div class="wrap"><a class="brand" href="index.html">Burak Özkan <small>Istanbul</small></a><button class="menubtn" type="button" aria-expanded="false" aria-controls="primary-menu">Menu</button><div class="site-preferences"><button id="language-toggle" class="preference-icon language-toggle" type="button" aria-label="Switch to Turkish" title="Switch to Turkish"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c5 5 5 13 0 18-5-5-5-13 0-18Z"/></svg><span data-language-code>EN</span></button><button id="theme-toggle" class="preference-icon" type="button" aria-label="Switch to dark mode" title="Switch to dark mode" aria-pressed="false"><svg class="moon-icon" viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M20.9 14.2A9 9 0 0 1 9.8 3.1 9 9 0 1 0 20.9 14.2Z"/></svg><svg class="sun-icon" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.4 1.4m11.2 11.2L19 19M5 19l1.4-1.4M17.6 6.4 19 5"/></svg></button></div><nav id="primary-menu" aria-label="Primary"><ul><li><a class="on" aria-current="page" href="index.html">Home</a></li><li><a href="portfolio.html">Work</a></li><li><a href="projects.html">Projects</a></li><li><a href="life.html">Life</a></li><li><a href="gear.html">Gear</a></li><li><a href="blog.html">Writing</a></li><li><a href="profile.html">About</a></li></ul></nav></div></header><div class="demo-notice">DESIGN PREVIEW · Stories, product ownership, career examples and metrics are sample content.</div><main>
+
+
+
+
+<section style="padding: 64px 0 56px; border-bottom: 1px solid var(--line)" class="v4-hero">
+  <div class="wrap grid" style="align-items: center">
+    <div class="span7 col" style="gap: 24px">
+      <p class="small" style="display: flex; gap: 12px; align-items: center"><span style="display: inline-block; width: 28px; height: 1px; background: var(--orange)"></span>Technical Architect, Istanbul</p>
+      <h1 class="h1" style="font-size: 58px; max-width: 760px">A personal space for the systems I design, the things I build, and the life I want to remember.</h1>
+      <p class="body-l muted" style="max-width: 560px">This is where I post instead of social media: short notes, trips, the house, the printer, the gear, and the occasional long piece on architecture.</p>
+    </div>
+    <div class="span5" style="display: grid; grid-template-columns: 5fr 4fr; grid-template-rows: auto auto; gap: 12px; align-items: stretch">
+      <img src="assets/images/hero-istanbul.jpg" alt="Istanbul rooftops at dawn" style="grid-row: span 2; width: 100%; height: 100%; min-height: 360px; object-fit: cover; border-radius: 4px; display: block" loading="eager">
+      <img src="assets/images/hero-workshop.jpg" alt="Workshop bench with printed parts" style="width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 4px; display: block" loading="eager">
+      <img src="assets/images/hero-family.jpg" alt="Family at the shore, facing the sea" style="width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 4px; display: block" loading="eager">
+    </div>
+  </div>
+</section><section class="selected-work"><div class="wrap"><a href="architecture-notes.html" class="selected-work-inner"><span class="cat">SELECTED ARCHITECTURE<br><span class="mock">Illustrative case study</span></span><div><h2 class="h3">Rebuilding order orchestration for a multi-brand retailer</h2><p class="small">Context, boundaries, event contracts, migration trade-offs, and operational lessons.</p></div><span class="selected-arrow">↗</span></a></div></section>
+
+
+<section style="padding: 40px 0 72px">
+  <div class="wrap grid" style="align-items: start">
+
+
+    <div class="span8 col timeline-stream" style="gap: 0" data-feed><div class="timeline-heading"><span class="cat">PERSONAL JOURNAL</span><h2 class="h3">Along the way.</h2><p class="small">Things built, places visited, moments remembered.</p></div>
+
+
+      <div class="feed-toolbar">
+        <label class="journal-search-field mobile-journal-search"><input type="search" data-search data-feed-search data-search-scope="journal" placeholder="Search notes, trips, projects…" aria-label="Search the journal"></label>
+        <div class="filters" role="group" data-feed-filters></div>
+        <div class="feed-secondary"><label class="feed-type"><span>Type</span><select data-feed-type></select></label><button type="button" class="feed-clear" data-feed-reset disabled>Clear filters ↺</button><span class="tiny"><span class="mock">Sample journal</span></span></div>
+      </div>
+      <p class="filter-summary" aria-live="polite" data-feed-summary></p>
+      <p class="tiny feed-lang-note">Interface labels follow the language toggle. Sample entries stay in their original language, marked on each entry.</p>
+      <noscript><p class="small">The sample journal needs JavaScript to show its entries.</p></noscript>
+      <div data-feed-list></div>
+      <div class="journal-empty" data-feed-empty hidden><h3 class="h4">No entries found.</h3><p class="small">Try a different search or clear the filters.</p><button type="button" data-feed-reset>Show all entries →</button></div>
+      <p class="tiny feed-end">End of the sample journal.</p>
+    </div>
+
+
+    <aside class="span4 journal-sidebar" aria-label="Journal tools"><section class="sidebar-module sidebar-subscribe">
+<p class="sidebar-kicker">STAY IN TOUCH</p>
+<h2 class="h4">New posts by email</h2>
+<p class="small">A short digest when something new is published. No algorithm, no ads, unsubscribe in one click.</p>
+<div class="subscribe-row"><label class="journal-search-field"><input type="email" placeholder="you@example.com" aria-label="Email address"></label><button class="btn primary sm" type="button">Subscribe</button></div>
+<p class="tiny">Subscriptions are not connected yet in this preview.</p>
+</section>
+<section class="sidebar-module">
+<p class="sidebar-kicker">ELSEWHERE</p>
+<div class="sidebar-elsewhere">
+<a class="btn sm" href="https://www.linkedin.com" target="_blank" rel="noopener"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><rect x="1" y="1" width="14" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M4.5 6.5v5M4.5 4.2v.1M7.5 11.5V8.8c0-1.3.8-2.3 2-2.3s2 .9 2 2.3v2.7" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>LinkedIn</a>
+<a class="btn sm" href="https://www.instagram.com" target="_blank" rel="noopener"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="1.5" width="13" height="13" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="8" cy="8" r="3" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="11.6" cy="4.4" r=".8" fill="currentColor"/></svg>Instagram</a>
+</div>
+</section>
+<section class="sidebar-module sidebar-now">
+<p class="sidebar-kicker">NOW</p>
+<p class="small">Reading [book]. Rebuilding the hallway dashboard. Planning a December trip. Last updated 28 Oct.</p>
+</section>
+
+<section class="sidebar-module sidebar-search"><p class="sidebar-kicker">FIND SOMETHING</p><h2 class="h4">Search the journal</h2><label class="journal-search-field"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><input type="search" data-search data-feed-search data-search-scope="journal" placeholder="Search notes, trips, projects…" aria-label="Search the journal"></label><p class="tiny">Search across the entries on this page.</p></section>
+<section class="sidebar-module"><p class="sidebar-kicker">BROWSE BY TOPIC</p><div class="sidebar-topics" data-feed-topics></div></section>
+<section class="sidebar-module"><p class="sidebar-kicker">JOURNAL ARCHIVE</p><h2 class="h4">A month at a time.</h2><div class="sidebar-months" data-feed-months></div><button type="button" class="sidebar-reset" data-feed-reset disabled>Clear filters ↺</button></section>
+<section class="sidebar-module sidebar-shortcuts"><p class="sidebar-kicker">TAKE A DIFFERENT PATH</p><a href="portfolio.html"><span>Architecture case studies</span><span aria-hidden="true">↗</span></a><a href="projects.html"><span>Things I build</span><span aria-hidden="true">↗</span></a><a href="gear.html"><span>My gear</span><span aria-hidden="true">↗</span></a><a href="life.html"><span>Life journal</span><span aria-hidden="true">↗</span></a><a class="unavailable sidebar-rss" title="RSS will be available on the live site">RSS feed (coming with the live site)</a></section>
+</aside>
+  </div>
+</section>
+
+
+
+</main><footer class="foot"><div class="wrap"><div class="grid"><div class="span5 col"><p class="brand">Burak Özkan</p><p class="lede">Systems I design, things I build, a life worth remembering.</p></div><div class="span3"><h4>Explore</h4><ul><li><a href="portfolio.html">Work</a></li><li><a href="projects.html">Projects</a></li><li><a href="life.html">Life</a></li><li><a href="blog.html">Writing</a></li></ul></div><div class="span4"><h4>About &amp; follow</h4><ul><li><a href="profile.html">About / CV / contact</a></li><li><a href="gear.html">My gear</a></li><li><a class="unavailable sidebar-rss" title="RSS will be available on the live site">RSS feed (coming with the live site)</a></li></ul></div></div><div class="end"><span>© 2026 Burak Özkan · Istanbul</span><span>V4.2 preview · Sample entries and illustrative images</span></div></div></footer><script src="assets/js/feed-data.js" defer></script><script src="assets/js/feed.js" defer></script><script src="assets/js/site.js" defer></script></body></html>

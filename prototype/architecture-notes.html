@@ -1,0 +1,166 @@
+<!doctype html><html lang="en"><head><script>(function(){let t='system',l='en';try{t=localStorage.getItem('burak-theme')||t;l=localStorage.getItem('burak-language')||l}catch{}if(!['light','dark','system'].includes(t))t='system';if(!['en','tr'].includes(l))l='en';window.__burakPrefs={theme:t,lang:l};document.documentElement.lang=l;document.documentElement.dataset.theme=t==='system'?(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'):t})();</script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Rebuilding order orchestration for a multi-brand retailer — Burak Özkan</title><meta name="description" content="Burak Özkan’s personal space for architecture, projects and life. Design preview with sample content."><link rel="stylesheet" href="assets/site.css"></head><body><header class="nav"><div class="wrap"><a class="brand" href="index.html">Burak Özkan <small>Istanbul</small></a><button class="menubtn" type="button" aria-expanded="false" aria-controls="primary-menu">Menu</button><div class="site-preferences"><button id="language-toggle" class="preference-icon language-toggle" type="button" aria-label="Switch to Turkish" title="Switch to Turkish"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c5 5 5 13 0 18-5-5-5-13 0-18Z"/></svg><span data-language-code>EN</span></button><button id="theme-toggle" class="preference-icon" type="button" aria-label="Switch to dark mode" title="Switch to dark mode" aria-pressed="false"><svg class="moon-icon" viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M20.9 14.2A9 9 0 0 1 9.8 3.1 9 9 0 1 0 20.9 14.2Z"/></svg><svg class="sun-icon" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.4 1.4m11.2 11.2L19 19M5 19l1.4-1.4M17.6 6.4 19 5"/></svg></button></div><nav id="primary-menu" aria-label="Primary"><ul><li><a href="index.html">Home</a></li><li><a class="on" aria-current="page" href="portfolio.html">Work</a></li><li><a href="projects.html">Projects</a></li><li><a href="life.html">Life</a></li><li><a href="gear.html">Gear</a></li><li><a href="blog.html">Writing</a></li><li><a href="profile.html">About</a></li></ul></nav></div></header><div class="demo-notice">DESIGN PREVIEW · Stories, product ownership, career examples and metrics are sample content.</div><main><div class="wrap original-language-note" data-original-note hidden></div><div class="wrap detail-back"><a class="link" href="portfolio.html">← Back to Work</a></div>
+
+
+
+<section class="pagehead" style="padding-bottom: 56px">
+  <div class="wrap col" style="gap: 28px">
+    <p class="small"><a class="link" href="portfolio.html">Work</a>  /  Case study  <span class="mock">mock content, anonymised</span></p>
+    <h1 class="h1" style="max-width: 1000px">Rebuilding order orchestration for a multi-brand retailer</h1>
+    <div class="grid" style="align-items: start; margin-top: 8px">
+      <p class="lede span7">Four storefront brands shared one order service that had grown for nine years. Every team deployed to it, nobody owned it, and a failed payment callback could leave an order in a state no screen could show. The brief was not “microservices”; it was “let brands release independently and let support see what happened to an order.”</p>
+      <dl class="kv span5" style="grid-template-columns: 130px 1fr; row-gap: 12px">
+        <dt>Role</dt><dd>Technical Architect; design lead for two squads of five</dd>
+        <dt>Duration</dt><dd>14 months, delivered in four increments</dd>
+        <dt>Industry</dt><dd>Retail and e-commerce</dd>
+        <dt>Stack</dt><dd>.NET 8, Kafka, PostgreSQL, Redis, Kubernetes on a private cloud</dd>
+        <dt>Scale</dt><dd>[orders/day] across four brands, peak during seasonal sales</dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
+
+<section class="section tight" style="border-top: 1px solid var(--line)">
+  <div class="wrap grid">
+    <div class="span3"><h2 class="h3">Business context</h2></div>
+    <div class="span6 prose">
+      <p>The group acquired its third and fourth brands within two years. Each came with its own storefront and its own promises to customers: next-day delivery, click and collect, split shipments. All of those promises ended up implemented as branches inside a single order service and a single shared database.</p>
+      <p>Releases were weekly, coordinated by a release manager, and increasingly cancelled. The business case was framed around time to market for a new brand and the cost of support tickets about “orders stuck in processing.”</p>
+    </div>
+    <div class="span3 panel tint" style="align-self: start">
+      <p class="tiny">What the business asked for</p>
+      <ul style="margin: 10px 0 0; padding-left: 18px; font-size: 15px; line-height: 1.5"><li>Brands release on their own schedule</li><li>Support can see an order’s full history</li><li>Onboard a fifth brand in under a quarter</li></ul>
+    </div>
+  </div>
+</section>
+
+<section class="section tight" style="border-top: 1px solid var(--line)">
+  <div class="wrap grid">
+    <div class="span3"><h2 class="h3">Architectural problem</h2></div>
+    <div class="span6 prose">
+      <p>The order lifecycle was spread across synchronous calls: storefront to order service, order service to payment provider, payment provider back to a webhook, webhook to warehouse API. Any link failing left the order in whatever state the last successful call had written. There was no record of attempts, only of final states.</p>
+      <p>Underneath that, the real problem was ownership. Pricing, stock, fulfilment and notification rules all lived in the same codebase and the same tables, so no team could change a rule without a cross-team review.</p>
+    </div>
+    <div class="span3 panel" style="align-self: start">
+      <p class="tiny">Constraints that shaped the design</p>
+      <ul style="margin: 10px 0 0; padding-left: 18px; font-size: 15px; line-height: 1.5"><li>No freeze on the daily release train</li><li>Legacy warehouse system stays, SOAP and all</li><li>Two squads, not ten</li><li>Private cloud only; no managed streaming</li></ul>
+    </div>
+  </div>
+</section>
+
+
+<section class="section" style="border-top: 1px solid var(--line)">
+  <div class="wrap">
+    <div class="sechead" style="margin-bottom: 32px">
+      <h2 class="h2">System map after the rebuild</h2>
+      <p class="small" style="max-width: 420px">Solid boxes are services the team owns. Dashed boxes are external or legacy. Arrows show the direction of commands and events, not every network call.</p>
+    </div>
+    <div class="panel" style="padding: 36px; display: flex; flex-direction: column; gap: 28px; overflow-x: auto">
+      <div class="lane"><span class="lbl">Clients</span>
+        <div style="display: flex; gap: 16px; flex-wrap: wrap">
+          <div class="box ext">Brand A storefront</div><div class="box ext">Brand B storefront</div><div class="box ext">Brand C storefront</div><div class="box ext">Brand D storefront</div><div class="box ext">Support console</div>
+        </div>
+      </div>
+      <div class="vconn"></div>
+      <div class="lane"><span class="lbl">Order domain</span>
+        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
+          <div class="box core" style="min-width: 190px"><b>Order API</b>Accepts commands, validates, writes order + outbox in one transaction</div>
+          <div class="conn"></div>
+          <div class="box core" style="min-width: 190px"><b>Order store</b>PostgreSQL, one schema per service, credentials enforce the boundary</div>
+          <div class="conn"></div>
+          <div class="box hot" style="min-width: 220px"><b>Event log</b>Kafka. Topics per aggregate: order, payment, shipment. Retained 30 days, compacted snapshots</div>
+          <div class="conn"></div>
+          <div class="box core" style="min-width: 190px"><b>Orchestrator</b>Saga per order; retries with backoff; dead-letter after 5 attempts</div>
+        </div>
+      </div>
+      <div class="vconn"></div>
+      <div class="lane"><span class="lbl">Downstream domains</span>
+        <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px">
+          <div class="box"><b>Payments</b>Wraps three PSPs; idempotent capture</div>
+          <div class="box"><b>Fulfilment</b>Anti-corruption layer over legacy warehouse</div>
+          <div class="box"><b>Notifications</b>Email, SMS, push; brand templates</div>
+          <div class="box"><b>Order history read model</b>Projection for support console</div>
+        </div>
+      </div>
+      <div class="vconn"></div>
+      <div class="lane"><span class="lbl">Legacy and external</span>
+        <div style="display: flex; gap: 16px; flex-wrap: wrap">
+          <div class="box ext">Warehouse (SOAP)</div><div class="box ext">PSP 1</div><div class="box ext">PSP 2</div><div class="box ext">PSP 3</div><div class="box ext">Carrier APIs</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="section" style="border-top: 1px solid var(--line)">
+  <div class="wrap">
+    <div class="sechead">
+      <h2 class="h2">Key decisions and their trade-offs</h2>
+    </div>
+    <div class="g2" style="gap: 24px">
+      <div class="panel col" style="gap: 12px">
+        <p class="cat">Decision 1</p>
+        <h3 class="h4">An event log as the only integration contract</h3>
+        <p class="small">Downstream domains subscribe to order events instead of reading order tables. Shared database access was removed by rotating credentials, not by asking nicely.</p>
+        <p class="small"><strong style="color: var(--ink); font-weight: 500">Cost:</strong> stock is eventually consistent; a nightly reconciliation job compares warehouse and order views and raises tickets for drift.</p>
+      </div>
+      <div class="panel col" style="gap: 12px">
+        <p class="cat">Decision 2</p>
+        <h3 class="h4">Orchestration, not choreography, for the order saga</h3>
+        <p class="small">A single orchestrator owns the order lifecycle so support can answer “where is this order” from one place. Choreography was tested and rejected because the failure paths were impossible to explain to the support team.</p>
+        <p class="small"><strong style="color: var(--ink); font-weight: 500">Cost:</strong> the orchestrator is a coordination point; it is stateless, horizontally scaled, and treated as the most reviewed code in the system.</p>
+      </div>
+      <div class="panel col" style="gap: 12px">
+        <p class="cat">Decision 3</p>
+        <h3 class="h4">Outbox pattern from the first service</h3>
+        <p class="small">Order writes and event publication share a transaction. A relay publishes to Kafka. No dual writes anywhere, even where it felt like overkill.</p>
+        <p class="small"><strong style="color: var(--ink); font-weight: 500">Cost:</strong> a little extra latency and one more table per service. Worth it the first time a broker was unavailable for 40 minutes.</p>
+      </div>
+      <div class="panel col" style="gap: 12px">
+        <p class="cat">Decision 4</p>
+        <h3 class="h4">Strangle the monolith by brand, not by feature</h3>
+        <p class="small">The smallest brand moved first, end to end. The monolith kept serving the other three until each moved. Feature-by-feature migration would have meant two code paths for every brand at once.</p>
+        <p class="small"><strong style="color: var(--ink); font-weight: 500">Cost:</strong> the largest brand ran on the old system for nine of the fourteen months.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="section" style="border-top: 1px solid var(--line)">
+  <div class="wrap grid">
+    <div class="span6 col" style="gap: 20px">
+      <h2 class="h3">Operational concerns</h2>
+      <ul class="list">
+        <li><span class="num">01</span><span class="small" style="color: var(--ink)"><strong style="font-weight: 500">Observability.</strong> Every event carries the order id as a trace attribute; the support console links straight to the trace.</span></li>
+        <li><span class="num">02</span><span class="small" style="color: var(--ink)"><strong style="font-weight: 500">Replay.</strong> Read models can be rebuilt from the log; this was used twice in the first quarter to fix projection bugs.</span></li>
+        <li><span class="num">03</span><span class="small" style="color: var(--ink)"><strong style="font-weight: 500">Dead letters.</strong> A small UI lists dead-lettered sagas with a one-click retry; on-call stopped needing database access.</span></li>
+        <li><span class="num">04</span><span class="small" style="color: var(--ink)"><strong style="font-weight: 500">Capacity.</strong> Seasonal sale load tested by replaying the previous year’s log at 3× speed.</span></li>
+      </ul>
+    </div>
+    <div class="span6 col" style="gap: 20px">
+      <h2 class="h3">Outcomes and lessons</h2>
+      <div class="g2" style="gap: 16px">
+        <div class="panel warm"><p class="h2" style="font-size: 40px">[n]</p><p class="small">fewer “stuck order” tickets per month <span class="mock">add figure</span></p></div>
+        <div class="panel warm"><p class="h2" style="font-size: 40px">4 → 1</p><p class="small">deploy approvals needed for a brand-level change</p></div>
+        <div class="panel"><p class="h2" style="font-size: 40px">[weeks]</p><p class="small">to onboard the fifth brand <span class="mock">add figure</span></p></div>
+        <div class="panel"><p class="h2" style="font-size: 40px">2</p><p class="small">read-model rebuilds in production, both uneventful</p></div>
+      </div>
+      <div class="prose" style="font-size: 17px">
+        <p>What I would do differently: start the support console earlier. It became the thing that made the architecture legible to non-engineers, and it arrived in month nine. And I would push harder on removing the third payment provider instead of wrapping it.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section tight" style="border-top: 1px solid var(--line)">
+  <div class="wrap" style="display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; align-items: center">
+    <a class="link" href="portfolio.html">Back to all work</a>
+    <div class="row" style="gap: 12px; flex-wrap: wrap"><span class="small">Related reading:</span><span class="tag unavailable" title="Sample preview; full content is not available yet">Outbox before you need it</span><span class="tag unavailable" title="Sample preview; full content is not available yet">One database per service</span></div>
+  </div>
+</section>
+
+
+
+</main><footer class="foot"><div class="wrap"><div class="grid"><div class="span5 col"><p class="brand">Burak Özkan</p><p class="lede">Systems I design, things I build, a life worth remembering.</p></div><div class="span3"><h4>Explore</h4><ul><li><a href="portfolio.html">Work</a></li><li><a href="projects.html">Projects</a></li><li><a href="life.html">Life</a></li><li><a href="blog.html">Writing</a></li></ul></div><div class="span4"><h4>About & follow</h4><ul><li><a href="profile.html">About / CV / contact</a></li><li><a href="gear.html">My gear</a></li><li><a class="unavailable sidebar-rss" title="RSS will be available on the live site">RSS feed (coming with the live site)</a></li></ul></div></div><div class="end"><span>© 2026 Burak Özkan · Istanbul</span><span>V4.2 preview · Sample entries and illustrative images</span></div></div></footer><script src="assets/js/site.js" defer></script></body></html>
