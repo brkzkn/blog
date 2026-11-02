@@ -29,14 +29,14 @@
       <div class="feed-toolbar">
         <label class="journal-search-field mobile-journal-search"><input type="search" data-search data-feed-search data-search-scope="journal" placeholder="Search notes, trips, projects…" aria-label="Search the journal"></label>
         <div class="filters" role="group" data-feed-filters></div>
-        <div class="feed-secondary"><label class="feed-type"><span>Type</span><select data-feed-type></select></label><button type="button" class="feed-clear" data-feed-reset disabled>Clear filters ↺</button><span class="tiny"><span class="mock">Sample journal</span></span></div>
+        <div class="feed-types" role="group" aria-labelledby="feed-types-label"><span class="feed-types-label" id="feed-types-label">Type</span><div class="feed-types-list" data-feed-types></div></div>
       </div>
-      <p class="filter-summary" aria-live="polite" data-feed-summary></p>
+      <div class="feed-status"><p class="filter-summary" aria-live="polite" data-feed-summary></p><button type="button" class="feed-clear" data-feed-reset disabled>Clear filters ↺</button></div>
       <p class="tiny feed-lang-note">Interface labels follow the language toggle. Sample entries stay in their original language, marked on each entry.</p>
       <noscript><p class="small">The sample journal needs JavaScript to show its entries.</p></noscript>
       <div data-feed-list></div>
       <div class="journal-empty" data-feed-empty hidden><h3 class="h4">No entries found.</h3><p class="small">Try a different search or clear the filters.</p><button type="button" data-feed-reset>Show all entries →</button></div>
-      <p class="tiny feed-end">End of the sample journal.</p>
+      <div class="feed-end"><p class="tiny">End of the sample journal.</p><button type="button" class="feed-top" data-feed-top>Back to filters ↑</button></div>
     </div>
 
 

@@ -29,31 +29,31 @@ const art={
  chip:'<svg class="fe-art" viewBox="0 0 320 180" role="img" aria-label="Placeholder preview: a small circuit board"><rect x="110" y="50" width="100" height="80" rx="4"/><path d="M130 50V30m30 20V30m30 20V30M130 130v20m30-20v20m30-20v20M110 70H90m20 20H90m20 20H90M210 70h20m-20 20h20m-20 20h20" class="line"/><circle cx="160" cy="90" r="10" class="hotfill"/></svg>'
 };
 
-const foot=e=>`<p class="fe-foot tiny"><span>Written in ${langNames[e.language]}</span>${e.sample?'<span class="mock">Sample</span>':''}</p>`;
-const body=e=>`<p lang="${e.language}">${esc(e.body)}</p>`;
+// language and sample status live in the left meta column as one small label; the full language name is read out, "EN" is only shown
+const origin=e=>`<span class="timeline-origin mock"><span class="fe-sr">Written in ${langNames[e.language]}</span><span aria-hidden="true">${e.language.toUpperCase()}</span>${e.sample?' · <span>Sample</span>':''}</span>`;
 
 const renderers={
- note:e=>`<p class="fe-note-text" lang="${e.language}">${esc(e.body)}</p>${foot(e)}`,
+ note:e=>`<p class="fe-note-text" lang="${e.language}">${esc(e.body)}</p>`,
 
  album:e=>{const n=e.photos.length,r=e.photos[0].w/e.photos[0].h;
   return `${e.title?`<h2 class="h4">${esc(e.title)}</h2>`:''}<p class="fe-caption" lang="${e.language}">${esc(e.caption)}</p>
   <div class="fe-album n${n}" style="--ratio:${e.photos[0].w}/${e.photos[0].h}" role="group" aria-label="${esc(e.title||e.place)}">${e.photos.map((p,i)=>`<button type="button" class="fe-photo" data-album="${e.id}" data-index="${i}" aria-label="${esc(photoLabel(i+1,n,p.alt))}">${img(p)}</button>`).join('')}</div>
-  <p class="fe-meta tiny"><span>${esc(e.place)}</span><span>${n} photos</span>${e.href?`<a class="link" href="${esc(e.href)}">${esc(e.linkLabel)} ${arrow}</a>`:''}</p>${foot(e)}`},
+  <p class="fe-meta tiny"><span>${esc(e.place)}</span><span>${n} photos</span>${e.href?`<a class="link" href="${esc(e.href)}">${esc(e.linkLabel)} ${arrow}</a>`:''}</p>`},
 
  writing:e=>{const heading=e.href?`<a href="${esc(e.href)}">${esc(e.title)}</a>`:esc(e.title);
   const info=[e.publishedAt?`<span>Published</span> <time datetime="${e.publishedAt}">${fullDate(e)}</time>`:'',e.readingMinutes?`<span>${e.readingMinutes} min read</span>`:''].filter(Boolean).map(x=>`<span>${x}</span>`).join('');
   return `${e.cover?`<div class="fe-cover">${img(e.cover)}</div>`:''}<div class="fe-writing${e.art?' has-art':''}"><div class="fe-writing-text">
    <h2 class="h3" lang="${e.language}">${heading}</h2><p class="small" lang="${e.language}">${esc(e.summary)}</p>
-   <p class="fe-meta tiny">${info}</p>${tagList(e)}${e.href?'':'<p class="fe-pending tiny">Sample preview · Full entry coming later</p>'}</div>${e.art?art[e.art]:''}</div>${foot(e)}`},
+   <p class="fe-meta tiny">${info}</p>${tagList(e)}${e.href?'':'<p class="fe-pending tiny">Sample preview · Full entry coming later</p>'}</div>${e.art?art[e.art]:''}</div>`},
 
  project:e=>`<div class="fe-log"><div class="fe-log-head"><p class="fe-kicker">${esc(e.project)}</p><span class="tag warm" lang="${e.language}">${esc(e.status)}</span></div>
   <h2 class="h4">${esc(e.title)}</h2><div class="fe-log-body${e.image?' has-img':''}"><dl class="fe-log-list"><dt>What changed</dt><dd><ul>${e.changes.map(c=>`<li>${esc(c)}</li>`).join('')}</ul></dd>
   ${e.next?`<dt>Next step</dt><dd>${esc(e.next)}</dd>`:''}</dl>${e.image?`<div class="fe-log-img">${img(e.image)}</div>`:''}</div>
-  <p class="fe-meta tiny">${e.logHref?`<a class="link" href="${esc(e.logHref)}">${esc(e.logLabel)} ${arrow}</a>`:''}${tagList(e)}</p></div>${foot(e)}`,
+  <div class="fe-meta tiny">${e.logHref?`<a class="link" href="${esc(e.logHref)}">${esc(e.logLabel)} ${arrow}</a>`:''}${tagList(e)}</div></div>`,
 
  milestone:e=>`<div class="fe-milestone"><div class="fe-milestone-text"><p class="fe-milestone-date"><time datetime="${e.publishedAt}">${esc(e.dateLabel)}</time></p>
   <h2 class="h3" lang="${e.language}">${esc(e.title)}</h2><p class="fe-milestone-body" lang="${e.language}">${esc(e.body)}</p></div>
-  <figure class="fe-milestone-art">${art.twins}<figcaption class="tiny">${esc(e.illustration)}</figcaption></figure></div>${foot(e)}`,
+  <figure class="fe-milestone-art">${art.twins}<figcaption class="tiny">${esc(e.illustration)}</figcaption></figure></div>`,
 
  review:e=>{const book=e.subject==='Book';
   const cover=book?`<div class="fe-book" aria-hidden="true"><span class="fe-book-title">${esc(e.title)}</span><span class="fe-book-author">${esc(e.creator)}</span></div>`:(e.cover?img(e.cover,'fe-device'):'');
@@ -64,13 +64,13 @@ const renderers={
    <p class="fe-review-body" lang="${e.language}">${esc(e.body)}</p>
    ${e.recommend?`<p class="fe-recommend small"><b>Who I’d recommend it to</b> ${esc(e.recommend)}</p>`:''}
    ${e.href&&e.linkLabel?`<p class="fe-meta tiny"><a class="link" href="${esc(e.href)}">${esc(e.linkLabel)} ${arrow}</a></p>`:''}
-   ${e.fictional?`<p class="tiny">${esc(e.fictional)}</p>`:''}</div></div>${foot(e)}`},
+   ${e.fictional?`<p class="tiny">${esc(e.fictional)}</p>`:''}</div></div>`},
 
  monthly:e=>`<div class="fe-monthly"><div class="fe-collage" role="group" aria-label="Cover collage, illustrative images">${e.collage.map((p,i)=>`<img class="c${i}" src="${esc(p.src)}" alt="${esc(p.alt)}" loading="lazy" decoding="async">`).join('')}</div>
   <div class="fe-monthly-text"><h2 class="h3"><a href="${esc(e.href)}">${esc(e.title)}</a></h2>
   <ul class="fe-counts">${e.counts.map(([n,l])=>`<li><b>${n}</b> <span>${esc(l)}</span></li>`).join('')}</ul>
   <blockquote class="fe-highlight"><p class="fe-kicker">Highlight of the month</p><p lang="${e.language}">${esc(e.highlight)}</p></blockquote>
-  <p class="fe-meta tiny"><a class="link" href="${esc(e.href)}">See the full month ${arrow}</a></p></div></div>${foot(e)}`,
+  <p class="fe-meta tiny"><a class="link" href="${esc(e.href)}">See the full month ${arrow}</a></p></div></div>`,
 
  link:e=>{const live=e.verified;const tag=live?'a':'div';
   const attrs=live?` href="${esc(e.url)}" target="_blank" rel="noopener noreferrer"`:'';
@@ -78,7 +78,7 @@ const renderers={
   <${tag} class="fe-source"${attrs}><span class="fe-source-img">${art.chip}</span><span class="fe-source-text"><span class="fe-kicker">From the source</span>
   <span class="fe-source-title">${esc(e.linkTitle)}</span><span class="fe-source-desc" lang="en">${esc(e.description)}</span>
   <span class="fe-source-domain tiny"><span>${esc(e.domain)}</span> · <span>${live?'Opens in a new tab':'Fictional link, not clickable'}</span>${live?' <span aria-hidden="true">↗</span>':''}</span></span></${tag}>
-  <p class="fe-meta tiny">Preview image is a placeholder drawn in code.</p>${foot(e)}`}
+  <p class="fe-meta tiny">Preview image is a placeholder drawn in code.</p>`}
 };
 
 // ---- render ----
@@ -87,7 +87,7 @@ const stream=root.querySelector('[data-feed-list]');
 const skip=new Set(['src','href','logHref','url','id']);
 const collect=(v,out=[])=>{if(typeof v==='string')out.push(v);else if(Array.isArray(v))v.forEach(x=>collect(x,out));else if(v&&typeof v==='object')Object.entries(v).forEach(([k,x])=>skip.has(k)||collect(x,out));return out};
 const haystack=new Map(sorted.map(e=>[e.id,normalize([...collect(e),categoryLabels[e.category],typeLabels[e.type],dateText(e),fullDate(e)].join(' '))]));
-stream.innerHTML=sorted.map(e=>`<article class="timeline-entry fe-entry" id="entry-${e.id}" data-feed-entry="${e.id}" data-type="${e.type}" data-feed-cat="${e.category}"><div class="timeline-meta"><time datetime="${e.publishedAt}"><span class="timeline-date">${dateText(e)}</span><span class="timeline-year">${parts(e).y}</span></time><span class="timeline-category">${categoryLabels[e.category]}</span><span class="timeline-type">${typeLabels[e.type]}</span></div><div class="timeline-content fe-body-${e.type}">${renderers[e.type](e)}</div></article>`).join('');
+stream.innerHTML=sorted.map(e=>`<article class="timeline-entry fe-entry" id="entry-${e.id}" data-feed-entry="${e.id}" data-type="${e.type}" data-feed-cat="${e.category}"><div class="timeline-meta"><time datetime="${e.publishedAt}"><span class="timeline-date">${dateText(e)}</span><span class="timeline-year">${parts(e).y}</span></time><span class="timeline-category">${categoryLabels[e.category]}</span><span class="timeline-type">${typeLabels[e.type]}</span>${origin(e)}</div><div class="timeline-content fe-body-${e.type}">${renderers[e.type](e)}</div></article>`).join('');
 const nodes=new Map([...stream.querySelectorAll('[data-feed-entry]')].map(n=>[n.dataset.feedEntry,n]));
 
 // ---- controls built from the data ----
@@ -96,8 +96,7 @@ const btn=(attr,value,label)=>`<button type="button" ${attr}="${value}" aria-pre
 document.querySelectorAll('[data-feed-topics]').forEach(n=>n.innerHTML=btn('data-feed-category','all','All entries')+catList.map(([k,l])=>btn('data-feed-category',k,l)).join(''));
 document.querySelectorAll('[data-feed-months]').forEach(n=>n.innerHTML=btn('data-feed-month','all','All months')+monthKeys.map(k=>btn('data-feed-month',k,monthName(k))).join(''));
 root.querySelector('[data-feed-filters]').innerHTML=['all',...catList.map(c=>c[0])].map(k=>`<button type="button" data-feed-category="${k}" aria-pressed="false">${esc(k==='all'?'All':categoryLabels[k])}</button>`).join('');
-const select=root.querySelector('[data-feed-type]');
-select.innerHTML=`<option value="all">All types</option>`+window.FEED_TYPES.map(([k,l])=>`<option value="${k}">${esc(l)}</option>`).join('');
+root.querySelector('[data-feed-types]').innerHTML=[['all','All types'],...window.FEED_TYPES].map(([k,l])=>`<button type="button" data-feed-type="${k}" aria-pressed="false">${esc(l)}</button>`).join('');
 
 // ---- filtering ----
 const state={category:'all',type:'all',month:'all',query:''};
@@ -109,22 +108,28 @@ function apply(){
  let shown=0,last=null,first=null;
  sorted.forEach(e=>{const n=nodes.get(e.id),show=ok(e);n.hidden=!show;n.classList.remove('is-first','is-last');if(show){shown++;first=first||n;last=n}});
  first?.classList.add('is-first');last?.classList.add('is-last');
- setText(summary,shown?`Showing ${shown} of ${sorted.length} entries`:'No entries match');empty.hidden=shown!==0;
+ const active=state.category!=='all'||state.type!=='all'||state.month!=='all'||!!state.query;
+ // the count only appears once a filter is on; an unfiltered feed needs no "showing 14 of 14"
+ setText(summary,!active?'':shown?`Showing ${shown} of ${sorted.length} entries`:'No entries match');empty.hidden=shown!==0;
+ document.querySelectorAll('[data-feed-type]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.feedType===state.type)));
  document.querySelectorAll('[data-feed-category]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.feedCategory===state.category)));
  document.querySelectorAll('[data-feed-month]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.feedMonth===state.month)));
  document.querySelectorAll('[data-count-category]').forEach(n=>setText(n,sorted.filter(e=>(n.dataset.countCategory==='all'||e.category===n.dataset.countCategory)&&ok(e,'category')).length));
  document.querySelectorAll('[data-count-month]').forEach(n=>setText(n,sorted.filter(e=>(n.dataset.countMonth==='all'||parts(e).month===n.dataset.countMonth)&&ok(e,'month')).length));
- if(select.value!==state.type)select.value=state.type;
- const active=state.category!=='all'||state.type!=='all'||state.month!=='all'||!!state.query;
  document.querySelectorAll('[data-feed-reset]').forEach(b=>{b.disabled=!active});
 }
 function reset(){state.category='all';state.type='all';state.month='all';state.query='';searchInputs.forEach(i=>i.value='');apply();
  const f=document.activeElement;if(!f||f===document.body||f.disabled||f.closest('[hidden]'))root.querySelector('[data-feed-filters] button')?.focus()}
 document.addEventListener('click',ev=>{
- const c=ev.target.closest('[data-feed-category]'),m=ev.target.closest('[data-feed-month]'),r=ev.target.closest('[data-feed-reset]');
- if(c){state.category=c.dataset.feedCategory;apply()}else if(m){state.month=m.dataset.feedMonth;apply()}else if(r&&!r.disabled)reset();
+ const c=ev.target.closest('[data-feed-category]'),t=ev.target.closest('[data-feed-type]'),m=ev.target.closest('[data-feed-month]'),r=ev.target.closest('[data-feed-reset]');
+ if(c){state.category=c.dataset.feedCategory;apply()}else if(t){state.type=t.dataset.feedType;apply()}else if(m){state.month=m.dataset.feedMonth;apply()}else if(r&&!r.disabled)reset();
 });
-select.addEventListener('change',()=>{state.type=select.value;apply()});
+// long feeds: one tap from the last entry back to the filters (focus follows, so keyboard users land on the first pill)
+const toolbar=root.querySelector('.feed-toolbar');
+root.querySelector('[data-feed-top]')?.addEventListener('click',()=>{
+ toolbar.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
+ toolbar.querySelector('[data-feed-filters] button')?.focus({preventScroll:true});
+});
 searchInputs.forEach(input=>input.addEventListener('input',()=>{state.query=normalize(input.value.trim());searchInputs.forEach(o=>{if(o!==input)o.value=input.value});apply()}));
 
 // ---- photo lightbox ----

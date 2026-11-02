@@ -221,13 +221,8 @@ body{background:var(--bg);color:var(--ink)}.nav .wrap{gap:18px}.nav .brand{white
 
 /* 2026-11-01: eight entry types on the home timeline (rendered by assets/js/feed.js from feed-data.js). */
 .feed-toolbar{display:flex;flex-direction:column;gap:14px;padding-bottom:6px}
-.feed-secondary{display:flex;align-items:center;gap:6px 18px;flex-wrap:wrap}
-.feed-type{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--ink3)}
-.feed-type select{min-height:36px;max-width:100%;padding:4px 28px 4px 10px;border:1px solid var(--line2);border-radius:4px;background:var(--surface);color:var(--ink);font:13px var(--sans);cursor:pointer}
-.feed-type select:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
 .feed-clear{border:0;background:transparent;color:var(--blue-ink);font:13px var(--sans);padding:8px 0;cursor:pointer}.feed-clear:disabled{visibility:hidden}
 .feed-lang-note{margin:0 0 6px;max-width:560px}.timeline-stream .filter-summary{margin-top:10px}
-.feed-end{text-align:center;padding-top:32px}
 .fe-entry{--dot-x:127.5px;--dot-y:38.5px;--dot:7px}
 .fe-entry:after{width:var(--dot);height:var(--dot);left:calc(var(--dot-x) - var(--dot) / 2);top:calc(var(--dot-y) - var(--dot) / 2)}
 .fe-entry.is-first:before{top:var(--dot-y)}.fe-entry.is-last:before{bottom:auto;height:var(--dot-y)}.fe-entry.is-first.is-last:before{display:none}
@@ -240,7 +235,7 @@ body{background:var(--bg);color:var(--ink)}.nav .wrap{gap:18px}.nav .brand{white
 .fe-entry[data-type=link]:after{border-color:var(--blue)}
 .timeline-type{display:block;font-size:11px;color:var(--ink3);margin-top:3px}
 .fe-kicker{font:500 12px/1.4 var(--sans);color:var(--blue-ink);margin:0}
-.fe-foot,.fe-meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px;margin:0}
+.fe-meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px;margin:0}
 .fe-tags{display:flex;flex-wrap:wrap;gap:6px;list-style:none;margin:0;padding:0}.fe-tags .tag{font-size:12px;padding:6px 9px}
 .fe-pending{margin:0;color:var(--ink3)}
 .fe-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
@@ -305,3 +300,56 @@ a.fe-source:hover{color:var(--ink);border-color:var(--orange)}
  .fe-note-text,.fe-comment{font-size:20px}.fe-source-img{max-width:200px}
  .feed-lightbox figcaption{padding-inline:14px}.feed-lightbox-bar{padding-inline:14px}.feed-lightbox-bar button{padding:0 12px}
 }
+
+/* 2026-11-02: feed polish. Linked titles read as links, one origin label in the meta column, a quieter filter area, a text-style type row, stronger type markers. */
+/* filter area: pills, then the type row; the count and "clear" share one line that only fills in once a filter is on */
+.feed-toolbar{min-width:0;gap:12px}
+.feed-types{display:flex;align-items:baseline;gap:6px 14px;min-width:0}
+.feed-types-label{flex:none;font:500 11px/1.4 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--ink3)}
+.feed-types-list{display:flex;flex-wrap:wrap;gap:2px 14px;min-width:0}
+.feed-types-list button{min-height:32px;padding:0;border:0;border-bottom:1px solid transparent;border-radius:0;background:transparent;color:var(--ink2);font:13px var(--sans);cursor:pointer}
+.feed-types-list button:hover{color:var(--ink);border-bottom-color:var(--line2)}
+.feed-types-list button[aria-pressed=true]{color:var(--ink);font-weight:500;border-bottom-color:var(--ink)}
+.feed-types-list button:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+.feed-status{display:flex;align-items:center;gap:6px 16px;flex-wrap:wrap;min-height:34px}
+.timeline-stream .feed-status .filter-summary{margin:0}
+.feed-status .filter-summary:empty{display:none}
+.feed-clear{padding:6px 0}
+.feed-lang-note{display:none;margin:0 0 6px;max-width:560px}
+:root[lang=tr] .feed-lang-note{display:block}
+.feed-end{display:flex;align-items:center;justify-content:space-between;gap:8px 16px;flex-wrap:wrap;margin-top:8px;padding-top:20px;border-top:1px solid var(--line)}
+.feed-end p{margin:0}
+.feed-top{border:0;background:transparent;color:var(--blue-ink);font:14px var(--sans);padding:10px 0;cursor:pointer}.feed-top:hover{color:var(--orange)}
+.feed-toolbar{scroll-margin-top:16px}
+/* linked titles: a hairline underline like .link, so they are readable as links without hover (touch has none) */
+.fe-writing-text h2 a,.fe-review-text h2 a,.fe-monthly-text h2 a{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:6px;text-decoration-color:var(--line2)}
+.fe-writing-text h2 a:hover,.fe-review-text h2 a:hover,.fe-monthly-text h2 a:hover{text-decoration-color:currentColor}
+/* meta column: type label with more contrast, then one "EN · Sample" label instead of a footer under every entry */
+.timeline-type{font-size:12px;font-weight:500;color:var(--ink2)}
+.timeline-origin{display:inline-block;margin-top:10px;white-space:nowrap}
+/* type markers: bigger, same shapes */
+.fe-entry{--dot:11px}
+.fe-entry[data-type=project]:after{--dot:16px;height:4px;top:calc(var(--dot-y) - 2px)}
+.fe-entry[data-type=milestone]{--dot:18px}
+.fe-entry[data-type=monthly]:after{--dot:16px}
+/* project update: link left, tags right, on one hairline row */
+.fe-log .fe-meta{justify-content:space-between;padding-top:12px;border-top:1px solid var(--line)}
+.fe-log .fe-meta:empty{display:none}
+/* larger media where the column had room */
+.fe-album{max-width:none}
+.fe-log-body.has-img{grid-template-columns:minmax(0,1fr) 250px}
+.fe-monthly{grid-template-columns:230px minmax(0,1fr);align-items:stretch}
+.fe-collage{aspect-ratio:auto;min-height:100%}
+@media(max-width:1000px){.fe-log-body.has-img{grid-template-columns:minmax(0,1fr) 200px}.fe-monthly{grid-template-columns:190px minmax(0,1fr)}}
+@media(max-width:640px){
+ .timeline-origin{margin-top:0}
+ .timeline-meta{row-gap:4px}
+ .feed-types{flex-direction:column;align-items:stretch;gap:0}
+ .feed-types-list{flex-wrap:nowrap;overflow-x:auto;gap:2px 20px;padding-bottom:4px;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent)}
+ .feed-types-list::-webkit-scrollbar{display:none}
+ .feed-types-list button{flex:none;white-space:nowrap}
+ .fe-monthly{grid-template-columns:minmax(0,1fr);align-items:start}.fe-collage{aspect-ratio:4/3;min-height:0;max-width:360px}
+ .fe-log-body.has-img{grid-template-columns:minmax(0,1fr)}.fe-log-img{max-width:320px}
+}
+/* short entries: the meta column (date, category, type, origin) is taller than a two-line note, which left an uneven gap under it; let it hang into the bottom padding instead of stretching the row */
+@media(min-width:641px){.fe-entry .timeline-meta{margin-bottom:-30px}}
