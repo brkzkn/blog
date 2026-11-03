@@ -15,7 +15,7 @@ The strip lists case studies from the `work` collection and shows **as many as a
   - 2: two columns, 1.3fr / 1fr.
   - 3: three columns, 1.45fr / 1fr / 1fr.
   - 640px and below: one column in every case.
-- **Lead card:** the first item is the lead: accent top line, larger title. The others are quiet.
+- **Lead card:** the first item is the lead: a larger title. All cards share one resting style (neutral top line); hover and keyboard focus turn the line blue and underline the title, so the accent never reads as a "selected" state.
 - **Card content:** kicker (sector, years) and title only. No summary and no tags; both stay on the case study page and on `/work/`.
 - **Real pages only:** every card links to its own published case study. No placeholder cards, no "coming later" entries, no shared fallback link.
 - **Footer link:** "All case studies" goes to `/work/` whenever the strip renders.
