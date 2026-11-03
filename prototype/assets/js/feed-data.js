@@ -1,16 +1,27 @@
 // Home feed sample entries. Every entry is sample content, not a real claim.
 // Shared fields: id, type, category, publishedAt (YYYY-MM-DD or YYYY-MM), language, tags, sample.
 // Everything else is type specific and optional: title, cover, rating and href are never required.
-// Types: note, album, writing, project, milestone, review, monthly, link.
-// Categories: work, projects, travel, culture, family, gear, personal.
+// Types: note, album, writing, project, milestone, review, restaurant, trip, monthly, link.
+// Categories: work, projects, travel, culture, family, gear, personal. Restaurants live under culture; trips under travel.
 window.FEED_TYPES = [
   ['note', 'Short note'], ['album', 'Photo album'], ['writing', 'Writing'], ['project', 'Project update'],
-  ['milestone', 'Milestone'], ['review', 'Review'], ['monthly', 'Monthly summary'], ['link', 'Shared link']
+  ['milestone', 'Milestone'], ['review', 'Review'], ['restaurant', 'Restaurant'], ['trip', 'Trip'],
+  ['monthly', 'Monthly summary'], ['link', 'Shared link']
 ];
 window.FEED_CATEGORIES = [
   ['work', 'Work'], ['projects', 'Projects'], ['travel', 'Travel'], ['culture', 'Culture'],
   ['family', 'Family'], ['gear', 'Gear'], ['personal', 'Personal']
 ];
+// Where a film or series was watched (review.platforms: [{ id, href? }]). `mark` is a neutral monogram, not the service's logo:
+// real logos are brand assets; add a `logo` image path here when you have permission to use them. A platform without an href is a plain, non-clickable label.
+window.FEED_PLATFORMS = {
+  netflix: { label: 'Netflix', mark: 'N' },
+  prime: { label: 'Prime Video', mark: 'P' },
+  appletv: { label: 'Apple TV+', mark: 'tv' },
+  disney: { label: 'Disney+', mark: 'D+' },
+  mubi: { label: 'MUBI', mark: 'M' },
+  cinema: { label: 'Cinema', mark: '' }
+};
 window.FEED_ENTRIES = [
   {
     id: 'monthly-2026-10', type: 'monthly', category: 'culture', publishedAt: '2026-10-31', language: 'en',
@@ -25,15 +36,15 @@ window.FEED_ENTRIES = [
     highlight: 'The one that stayed with me was the theatre evening: two actors, one table, no set. I walked home instead of taking the ferry.'
   },
   {
-    id: 'album-kadikoy', type: 'album', category: 'personal', publishedAt: '2026-10-30', language: 'tr',
-    tags: ['food', 'istanbul'], sample: true,
-    caption: 'Kadıköy’de yeni açılan bir yer: kalamar iyi, servis yavaş, manzara her şeyi affettiriyor. We will go back on a weekday.',
-    place: 'Kadıköy, Istanbul',
-    photos: [
-      { src: 'assets/images/note-calamari.jpg', alt: 'Calamari', w: 700, h: 700 },
-      { src: 'assets/images/note-view.jpg', alt: 'The view from the table', w: 700, h: 700 },
-      { src: 'assets/images/note-terrace.jpg', alt: 'The terrace', w: 700, h: 700 }
-    ]
+    id: 'restaurant-liman', type: 'restaurant', category: 'culture', publishedAt: '2026-10-30', language: 'tr',
+    tags: ['meyhane', 'kadikoy'], sample: true,
+    name: 'Küçük Liman', cuisine: 'Meyhane, deniz ürünleri', area: 'Kadıköy, Istanbul', price: 3, rating: 4, ratingMax: 5,
+    visited: 'Visited 30 Oct 2026',
+    body: 'Kadıköy’de yeni açılan bir yer: kalamar iyi, servis yavaş, manzara her şeyi affettiriyor. We will go back on a weekday.',
+    order: 'Kalamar, haydari, mevsim yeşillikleri',
+    photo: { src: 'assets/images/note-calamari.jpg', alt: 'Grilled calamari on a white plate', w: 700, h: 700 },
+    href: 'restaurant.html', linkLabel: 'Restaurant details',
+    fictional: 'Fictional place, sample content.'
   },
   {
     id: 'review-rayban-meta', type: 'review', category: 'gear', publishedAt: '2026-10-29', language: 'en',
@@ -58,6 +69,25 @@ window.FEED_ENTRIES = [
     next: 'Print in PETG and leave it on the hallway shelf for a week.', logHref: 'smart-home.html', logLabel: 'Smart home log'
   },
   {
+    id: 'album-hallway', type: 'album', category: 'personal', publishedAt: '2026-10-25', language: 'en',
+    tags: ['home', 'shelves'], sample: true,
+    caption: 'The hallway after a weekend of drilling. The sensor mount is the small thing on the left.',
+    place: 'Home, Istanbul',
+    photos: [
+      { src: 'assets/images/stock-smart-home.jpg', alt: 'A hallway shelf with a smart-home sensor', w: 1448, h: 1086 },
+      { src: 'assets/images/print-cable-clip.jpg', alt: 'A printed clip on the edge of a desk', w: 960, h: 720 }
+    ]
+  },
+  {
+    id: 'review-film-keeper', type: 'review', category: 'culture', publishedAt: '2026-10-23', language: 'en',
+    tags: ['film'], sample: true, subject: 'Film',
+    title: 'The Keeper of Salt Point', creator: 'Sample director', fictional: 'Fictional film and director, sample content.',
+    cover: { src: 'assets/images/poster-lighthouse.svg', alt: 'Illustrative poster: a lighthouse on a rocky point at night', w: 600, h: 900 },
+    rating: 4, ratingMax: 5, meta: 'Watched 23 Oct 2026',
+    platforms: [{ id: 'cinema' }],
+    body: 'Slow, quiet and very well lit. I watched it twice in one week, which I almost never do.'
+  },
+  {
     id: 'review-book-salt-ledger', type: 'review', category: 'culture', publishedAt: '2026-10-21', language: 'en',
     tags: ['books', 'fiction'], sample: true, subject: 'Book',
     title: 'The Salt Ledger', creator: 'Ines Varga', rating: 4, ratingMax: 5,
@@ -75,17 +105,17 @@ window.FEED_ENTRIES = [
     verified: true
   },
   {
-    id: 'album-london', type: 'album', category: 'travel', publishedAt: '2026-10-15', language: 'en',
+    id: 'trip-london', type: 'trip', category: 'travel', publishedAt: '2026-10-15', language: 'en',
     tags: ['london', 'rain'], sample: true,
-    title: 'Frames from London', href: 'london-guide.html', linkLabel: 'Read the London guide',
+    destination: 'London', country: 'United Kingdom', dates: '14 to 16 Mar 2025', days: '3 days',
     caption: 'Wet pavements, red buses, one flag. Four frames from three rainy days.',
-    place: 'London, United Kingdom',
     photos: [
       { src: 'assets/images/london-01.jpg', alt: 'Red double-decker bus passing Big Ben on a wet road', w: 960, h: 640 },
       { src: 'assets/images/london-02.jpg', alt: 'Union flag and black railings on a rainy street', w: 960, h: 640 },
       { src: 'assets/images/london-03.jpg', alt: 'Lamp light reflected on a wet pavement', w: 960, h: 640 },
       { src: 'assets/images/london-04.jpg', alt: 'Clock tower and a street lamp above the river bridge', w: 960, h: 640 }
-    ]
+    ],
+    href: 'london-guide.html', linkLabel: 'Read the London guide'
   },
   {
     id: 'writing-ayvalik', type: 'writing', category: 'travel', publishedAt: '2026-10-12', language: 'en',

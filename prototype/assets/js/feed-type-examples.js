@@ -15,13 +15,13 @@ window.FEED_TYPE_EXAMPLES=[
  },
  {
   type:'album',
-  use:'Fotoğraf öncelikli kayıt: 1 ila 4 fotoğraf, kısa açıklama, yer. Fotoğrafa tıklayınca görüntüleyici açılır.',
-  fields:'Zorunlu: photos (1–4), caption, place. Opsiyonel: title, href + linkLabel.',
+  use:'Sadece fotoğraf: 1 ila 4 fotoğraf, kısa açıklama, yer. Yemek (Restaurant) ve gezi (Trip) kayıtları artık ayrı türler; albüm bunların dışındaki anlar içindir. Fotoğrafa tıklayınca görüntüleyici açılır.',
+  fields:'Zorunlu: photos (1–4), caption, place. Opsiyonel: title, href + linkLabel (varsa belirgin düğme olarak çıkar).',
   variants:[
-   {label:'1 foto',note:'Tek geniş fotoğraf (2:1). Oran ilk fotoğraftan alınır.',entry:{id:'ex-album-1',type:'album',category:'travel',publishedAt:'2026-10-13',language:'en',tags:['ayvalik'],sample:true,caption:'The harbour at seven in the morning, before anyone was awake.',place:'Ayvalık, Balıkesir',photos:[{src:'assets/images/trip-ayvalik.jpg',alt:'Ayvalık harbour',w:1400,h:700}]}},
-   {label:'2 foto',note:'İki eşit kare.',entry:{id:'ex-album-2',type:'album',category:'personal',publishedAt:'2026-10-09',language:'en',tags:['food'],sample:true,caption:'Lunch, then the walk home.',place:'Moda, Istanbul',photos:[{src:'assets/images/note-calamari.jpg',alt:'Calamari',w:700,h:700},{src:'assets/images/note-terrace.jpg',alt:'The terrace',w:700,h:700}]}},
-   {label:'3 foto',note:'Üç kare yan yana (ana sayfadaki Kadıköy albümü).',ref:'album-kadikoy'},
-   {label:'4 + başlık',note:'Dört fotoğraf 2×2, başlık ve bağlantı (ana sayfadaki Londra albümü).',ref:'album-london'}
+   {label:'1 foto',note:'Tek geniş fotoğraf (2:1). Oran ilk fotoğraftan alınır.',entry:{id:'ex-album-1',type:'album',category:'personal',publishedAt:'2026-10-13',language:'en',tags:['harbour'],sample:true,caption:'The harbour at seven in the morning, before anyone was awake.',place:'Ayvalık, Balıkesir',photos:[{src:'assets/images/trip-ayvalik.jpg',alt:'Ayvalık harbour',w:1400,h:700}]}},
+   {label:'2 foto',note:'İki fotoğraf yan yana (ana sayfadaki koridor albümü).',ref:'album-hallway'},
+   {label:'3 foto',note:'Üç kare yan yana.',entry:{id:'ex-album-3',type:'album',category:'personal',publishedAt:'2026-10-09',language:'en',tags:['evening'],sample:true,caption:'Three frames from the walk home.',place:'Moda, Istanbul',photos:[{src:'assets/images/note-calamari.jpg',alt:'A plate on a table',w:700,h:700},{src:'assets/images/note-view.jpg',alt:'The view from the table',w:700,h:700},{src:'assets/images/note-terrace.jpg',alt:'The terrace',w:700,h:700}]}},
+   {label:'4 + başlık',note:'Dört fotoğraf 2×2, başlık ve belirgin detay düğmesi.',entry:{id:'ex-album-4',type:'album',category:'projects',publishedAt:'2026-09-30',language:'en',tags:['workshop'],sample:true,title:'The workshop, tidied',caption:'Four corners of the bench after a Saturday of sorting.',place:'Home, Istanbul',photos:[{src:'assets/images/stock-3d-printer.jpg',alt:'A desktop 3D printer on the bench',w:1448,h:1086},{src:'assets/images/print-cable-clip.jpg',alt:'Printed cable clips',w:960,h:720},{src:'assets/images/stock-smart-home.jpg',alt:'A shelf with a smart-home sensor',w:1448,h:1086},{src:'assets/images/hero-workshop.jpg',alt:'The workshop bench with printed parts',w:900,h:900}],href:'projects.html',linkLabel:'See the projects'}}
   ]
  },
  {
@@ -56,12 +56,35 @@ window.FEED_TYPE_EXAMPLES=[
  },
  {
   type:'review',
-  use:'Kitap, film, dizi, mekân ve cihaz için tek biçim. Solda kapak, sağda puan ve kısa yorum.',
-  fields:'Zorunlu: subject, title, body. Opsiyonel: creator, rating + ratingMax, cover, meta, recommend, href + linkLabel.',
+  use:'Kitap, film, dizi ve cihaz için tek biçim. Solda kapak ya da poster, sağda puan ve kısa yorum. Film ve dizide izlediğin yer küçük chip olarak eklenebilir (opsiyonel); href verirsen tıklanır, vermezsen düz etiket kalır. Restoran artık ayrı tür (Restaurant).',
+  fields:'Zorunlu: subject, title, body. Opsiyonel: creator, rating + ratingMax, cover (kitapta kodla çizilir, film/dizide poster, cihazda ürün görseli), meta, platforms[{id, href?}], recommend, href + linkLabel.',
   variants:[
    {label:'Kitap',note:'Kapak kodla çizilir, puan var, kurgu etiketi (ana sayfadaki The Salt Ledger).',ref:'review-book-salt-ledger'},
    {label:'Cihaz',note:'Gerçek görsel, puansız, bağlantılı (ana sayfadaki Ray-Ban Meta).',ref:'review-rayban-meta'},
-   {label:'Kapaksız',note:'Kapak yok; sol sütun boş kalmamalı.',entry:{id:'ex-review-film',type:'review',category:'culture',publishedAt:'2026-10-19',language:'en',tags:['film'],sample:true,subject:'Film',title:'A made-up film about a lighthouse',creator:'Sample director',fictional:'Fictional film and director, sample content.',rating:4,ratingMax:5,meta:'Watched 19 Oct 2026',body:'Slow, quiet and very well lit. I watched it twice in one week, which I almost never do.'}}
+   {label:'Film, sinema',note:'Poster (2:3), puan ve "Watched on: Cinema" chip\'i; bağlantısız düz etiket (ana sayfadaki film).',ref:'review-film-keeper'},
+   {label:'Dizi, 2 yer',note:'Poster, iki platform: Netflix tıklanır (bağlantı verilmiş), Prime Video düz etiket.',entry:{id:'ex-review-series',type:'review',category:'culture',publishedAt:'2026-10-17',language:'en',tags:['series'],sample:true,subject:'Series',title:'Night Train South',creator:'Sample creator',fictional:'Fictional series and creator, sample content.',cover:{src:'assets/images/poster-night-train.svg',alt:'Illustrative poster: a lit train crossing a bridge at dusk',w:600,h:900},rating:5,ratingMax:5,meta:'Watched Oct 2026',platforms:[{id:'netflix',href:'https://www.netflix.com/'},{id:'prime'}],body:'Six episodes, one train, and nobody explains anything twice. I paced myself to one a night so it would last.'}},
+   {label:'Posterşiz film',note:'Poster yok, platform yok; metin tam genişliği kullanır.',entry:{id:'ex-review-film-plain',type:'review',category:'culture',publishedAt:'2026-10-11',language:'en',tags:['film'],sample:true,subject:'Film',title:'A short film about a bridge',creator:'Sample director',fictional:'Fictional film and director, sample content.',rating:3,ratingMax:5,meta:'Watched 11 Oct 2026',body:'Twenty minutes, one location, and a very good use of silence.'}}
+  ]
+ },
+ {
+  type:'restaurant',
+  use:'Gittiğin bir restoran: ad, mutfak, mahalle, fiyat seviyesi, yıldız ve kısa yorum. Culture kategorisinde durur. Detay sayfası varsa belirgin bir düğme çıkar (şu an örnek: restaurant.html).',
+  fields:'Zorunlu: name, body, rating + ratingMax. Opsiyonel: cuisine, area, price (1–4), visited, order ("tekrar söyleyeceklerim"), photo (kare/dikey: yan sütun, yatay: üstte banner), href + linkLabel.',
+  variants:[
+   {label:'Tam kayıt',note:'Fotoğraf, fiyat seviyesi, puan, yorum, tekrar söyleyeceklerim ve detay düğmesi (ana sayfadaki Küçük Liman).',ref:'restaurant-liman'},
+   {label:'Fotoğrafsız',note:'Fotoğraf ve detay sayfası yok; metin tam genişliği kullanır.',entry:{id:'ex-restaurant-plain',type:'restaurant',category:'culture',publishedAt:'2026-10-08',language:'en',tags:['lunch'],sample:true,name:'Dükkan No. 4',cuisine:'Lunch counter',area:'Karaköy, Istanbul',price:1,rating:3,ratingMax:5,visited:'Visited 8 Oct 2026',body:'Fast, cheap, and exactly what it says on the door. The soup is the reason to go.',fictional:'Fictional place, sample content.'}},
+   {label:'Yatay foto',note:'Yatay (geniş) fotoğraf metnin üstünde banner olur; yön, fotoğrafın oranından otomatik seçilir.',entry:{id:'ex-restaurant-landscape',type:'restaurant',category:'culture',publishedAt:'2026-09-21',language:'tr',tags:['balik'],sample:true,name:'Çıkmaz Sokak Balıkçısı',cuisine:'Balık, meze',area:'Ayvalık',price:2,rating:4,ratingMax:5,visited:'Visited 21 Sep 2026',body:'Limanı gören masa, sade bir menü ve zamanında gelen çorba. Fiyat, manzaraya göre makul.',order:'Çupra, ahtapot salatası',photo:{src:'assets/images/trip-ayvalik.jpg',alt:'Illustrative harbour view from a table',w:1400,h:700},href:'restaurant.html',linkLabel:'Restaurant details',fictional:'Fictional place, sample content.'}},
+   {label:'EN, kare foto',note:'İngilizce kayıt, kare fotoğraf yan sütunda, detay sayfası yok.',entry:{id:'ex-restaurant-en',type:'restaurant',category:'culture',publishedAt:'2026-09-14',language:'en',tags:['dinner'],sample:true,name:'Terrace Eleven',cuisine:'Modern Turkish',area:'Moda, Istanbul',price:4,rating:5,ratingMax:5,visited:'Visited 14 Sep 2026',body:'Everything arrived when it should have. The view does half the work and the kitchen does the other half.',order:'The lamb, the quince dessert',photo:{src:'assets/images/note-terrace.jpg',alt:'A terrace table at sunset',w:700,h:700},fictional:'Fictional place, sample content.'}}
+  ]
+ },
+ {
+  type:'trip',
+  use:'Bir seyahat: yer, ülke, tarih aralığı, kısa açıklama, 1–4 fotoğraf. Travel kategorisinde durur. Detay (rehber) sayfasının bağlantısı belirgin bir düğme olarak çıkar.',
+  fields:'Zorunlu: destination, country, dates, caption, photos (1–4). Opsiyonel: days, href + linkLabel.',
+  variants:[
+   {label:'Rehberli, 4 foto',note:'Dört fotoğraf ve belirgin rehber düğmesi (ana sayfadaki Londra).',ref:'trip-london'},
+   {label:'1 foto, rehbersiz',note:'Tek geniş fotoğraf; rehber sayfası henüz yok, düğme çıkmaz.',entry:{id:'ex-trip-1',type:'trip',category:'travel',publishedAt:'2026-08-20',language:'en',tags:['weekend'],sample:true,destination:'Ayvalık',country:'Türkiye',dates:'20 to 23 Aug 2026',days:'3 days',caption:'A rented house, olive oil bought by the litre, and a harbour that empties out by nine.',photos:[{src:'assets/images/trip-ayvalik.jpg',alt:'Ayvalık harbour',w:1400,h:700}]}},
+   {label:'2 foto, Türkçe',note:'İki fotoğraf, Türkçe açıklama ve rehber düğmesi.',entry:{id:'ex-trip-2',type:'trip',category:'travel',publishedAt:'2026-07-12',language:'tr',tags:['kısa-gezi'],sample:true,destination:'Bozcaada',country:'Türkiye',dates:'10 to 12 Jul 2026',days:'2 days',caption:'Rüzgâr, şarap ve bisikletle bir tur. Geri dönerken feribot kuyruğu bile keyifliydi.',photos:[{src:'assets/images/note-view.jpg',alt:'Illustrative view from a table',w:700,h:700},{src:'assets/images/note-terrace.jpg',alt:'Illustrative terrace',w:700,h:700}],href:'london-guide.html',linkLabel:'Read the trip guide'}}
   ]
  },
  {

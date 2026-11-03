@@ -23,6 +23,17 @@ const monthName=key=>{const [y,m]=key.split('-');return `${monthsLong[+m-1]} ${y
 const img=(p,cls='')=>`<img${cls?` class="${cls}"`:''} src="${esc(p.src)}" alt="${esc(p.alt)}" width="${p.w}" height="${p.h}" loading="lazy" decoding="async">`;
 const tagList=e=>e.tags&&e.tags.length?`<ul class="fe-tags">${e.tags.slice(0,3).map(t=>`<li class="tag">${esc(t)}</li>`).join('')}</ul>`:'';
 const arrow='<span aria-hidden="true">→</span>';
+const photoCount=n=>`<span>${n} photo${n===1?'':'s'}</span>`;
+// a visible, button-like link to a detail page (trip guide, restaurant page); extra is anything that sits beside it on the row
+const ctaRow=(href,label,extra='')=>href||extra?`<div class="fe-cta-row">${href?`<a class="btn sm fe-cta" href="${esc(href)}">${esc(label)} ${arrow}</a>`:''}${extra}</div>`:'';
+const albumGrid=(e,name)=>{const n=e.photos.length;return `<div class="fe-album n${n}" style="--ratio:${e.photos[0].w}/${e.photos[0].h}" role="group" aria-label="${esc(name)}">${e.photos.map((p,i)=>`<button type="button" class="fe-photo" data-album="${e.id}" data-index="${i}" aria-label="${esc(photoLabel(i+1,n,p.alt))}">${img(p)}</button>`).join('')}</div>`};
+const ratingHtml=e=>e.rating?`<p class="fe-rating"><span class="stars" aria-hidden="true">${Array.from({length:e.ratingMax},(_,i)=>`<i${i<e.rating?'':' class="off"'}></i>`).join('')}</span><span class="fe-sr">Rating</span> <span>${e.rating}/${e.ratingMax}</span></p>`:'';
+const priceHtml=e=>e.price?`<span class="fe-price"><span class="fe-sr">Price level ${e.price} of 4</span><span aria-hidden="true">${(e.currency||'₺').repeat(e.price)}<i>${(e.currency||'₺').repeat(4-e.price)}</i></span></span>`:'';
+
+// where a film or series was watched: small chips with a neutral monogram (not a brand logo); clickable only when the entry gives an href
+const platformMark=(p,id)=>id==='cinema'?'<svg class="fe-platform-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h18v3.2a1.8 1.8 0 0 0 0 3.6V17H3v-3.2a1.8 1.8 0 0 0 0-3.6Z"/></svg>':`<span class="fe-platform-mark" aria-hidden="true">${esc(p.mark)}</span>`;
+const platformsHtml=e=>e.platforms&&e.platforms.length?`<p class="fe-platforms"><span class="tiny">Watched on</span><span class="fe-platform-list">${e.platforms.map(x=>{const p=(window.FEED_PLATFORMS||{})[x.id]||{label:x.id,mark:x.id.charAt(0).toUpperCase()};const inner=`${platformMark(p,x.id)}<span>${esc(p.label)}</span>`;
+ return x.href?`<a class="fe-platform" href="${esc(x.href)}" target="_blank" rel="noopener noreferrer">${inner} <span class="fe-sr">Opens in a new tab</span></a>`:`<span class="fe-platform">${inner}</span>`}).join('')}</span></p>`:'';
 
 const art={
  architecture:'<svg class="fe-art" viewBox="0 0 240 180" role="img" aria-label="Diagram: constraints lead to a small design that is tested, instead of an ideal diagram drawn first"><rect x="14" y="14" width="76" height="34" rx="3" class="dash"/><path d="M26 31h52" class="dash"/><rect x="14" y="73" width="76" height="34" rx="3"/><rect x="14" y="132" width="76" height="34" rx="3"/><rect x="150" y="73" width="76" height="34" rx="3" class="hot"/><path d="M90 90h60M52 107v25M52 48v25" class="line"/><path d="M144 85l6 5-6 5M46 126l6 6 6-6" class="line"/><circle cx="188" cy="90" r="5" class="hotfill"/></svg>',
@@ -36,10 +47,10 @@ const origin=e=>`<span class="timeline-origin mock"><span class="fe-sr">Written 
 const renderers={
  note:e=>`<p class="fe-note-text" lang="${e.language}">${esc(e.body)}</p>`,
 
- album:e=>{const n=e.photos.length,r=e.photos[0].w/e.photos[0].h;
+ album:e=>{const n=e.photos.length;
   return `${e.title?`<h2 class="h4">${esc(e.title)}</h2>`:''}<p class="fe-caption" lang="${e.language}">${esc(e.caption)}</p>
-  <div class="fe-album n${n}" style="--ratio:${e.photos[0].w}/${e.photos[0].h}" role="group" aria-label="${esc(e.title||e.place)}">${e.photos.map((p,i)=>`<button type="button" class="fe-photo" data-album="${e.id}" data-index="${i}" aria-label="${esc(photoLabel(i+1,n,p.alt))}">${img(p)}</button>`).join('')}</div>
-  <p class="fe-meta tiny"><span>${esc(e.place)}</span><span>${n} photo${n===1?'':'s'}</span>${e.href?`<a class="link" href="${esc(e.href)}">${esc(e.linkLabel)} ${arrow}</a>`:''}</p>`},
+  ${albumGrid(e,e.title||e.place)}
+  <p class="fe-meta tiny"><span>${esc(e.place)}</span>${photoCount(n)}</p>${ctaRow(e.href,e.linkLabel)}`},
 
  writing:e=>{const heading=e.href?`<a href="${esc(e.href)}">${esc(e.title)}</a>`:esc(e.title);
   const info=[e.publishedAt?`<span>Published</span> <time datetime="${e.publishedAt}">${fullDate(e)}</time>`:'',e.readingMinutes?`<span>${e.readingMinutes} min read</span>`:''].filter(Boolean).map(x=>`<span>${x}</span>`).join('');
@@ -58,14 +69,28 @@ const renderers={
 
  review:e=>{const book=e.subject==='Book';
   const cover=book?`<div class="fe-book" aria-hidden="true"><span class="fe-book-title">${esc(e.title)}</span><span class="fe-book-author">${esc(e.creator)}</span></div>`:(e.cover?img(e.cover,'fe-device'):'');
-  const stars=e.rating?`<p class="fe-rating"><span class="stars" aria-hidden="true">${Array.from({length:e.ratingMax},(_,i)=>`<i${i<e.rating?'':' class="off"'}></i>`).join('')}</span><span class="fe-sr">Rating</span> <span>${e.rating}/${e.ratingMax}</span></p>`:'';
   return `<div class="fe-review${book?' is-book':''}${cover?'':' no-cover'}">${cover?`<div class="fe-review-cover">${cover}</div>`:''}<div class="fe-review-text">
    <p class="fe-kicker">Review · ${esc(e.subject)}</p><h2 class="h3" lang="${e.language}">${e.href?`<a href="${esc(e.href)}">${esc(e.title)}</a>`:esc(e.title)}</h2>
-   ${e.creator?`<p class="small">${esc(e.creator)}${e.fictional?' <span class="mock">Fictional</span>':''}</p>`:''}${e.meta?`<p class="tiny">${esc(e.meta)}</p>`:''}${stars}
+   ${e.creator?`<p class="small">${esc(e.creator)}${e.fictional?' <span class="mock">Fictional</span>':''}</p>`:''}${e.meta?`<p class="tiny">${esc(e.meta)}</p>`:''}${ratingHtml(e)}${platformsHtml(e)}
    <p class="fe-review-body" lang="${e.language}">${esc(e.body)}</p>
    ${e.recommend?`<p class="fe-recommend small"><b>Who I’d recommend it to</b> ${esc(e.recommend)}</p>`:''}
    ${e.href&&e.linkLabel?`<p class="fe-meta tiny"><a class="link" href="${esc(e.href)}">${esc(e.linkLabel)} ${arrow}</a></p>`:''}
    ${e.fictional?`<p class="tiny">${esc(e.fictional)}</p>`:''}</div></div>`},
+
+ restaurant:e=>`<div class="fe-review fe-restaurant${e.photo?(e.photo.w/e.photo.h>1.15?' is-landscape':''):' no-cover'}">${e.photo?`<div class="fe-review-cover">${img(e.photo,'fe-device')}</div>`:''}<div class="fe-review-text">
+   ${e.cuisine?`<p class="fe-kicker" lang="${e.language}">${esc(e.cuisine)}</p>`:''}<h2 class="h3" lang="${e.language}">${e.href?`<a href="${esc(e.href)}">${esc(e.name)}</a>`:esc(e.name)}</h2>
+   <p class="small"><span lang="${e.language}">${esc(e.area)}</span>${e.price?' · ':''}${priceHtml(e)}${e.fictional?' <span class="mock">Fictional</span>':''}</p>
+   ${ratingHtml(e)}${e.visited?`<p class="tiny">${esc(e.visited)}</p>`:''}
+   <p class="fe-review-body" lang="${e.language}">${esc(e.body)}</p>
+   ${e.order?`<p class="fe-recommend small"><b>Order again</b> <span lang="${e.language}">${esc(e.order)}</span></p>`:''}
+   ${ctaRow(e.href,e.linkLabel)}
+   ${e.fictional?`<p class="tiny">Fictional place, sample content.</p>`:''}</div></div>`,
+
+ trip:e=>`<div class="fe-trip"><p class="fe-kicker" lang="${e.language}">${esc(e.country)}</p><h2 class="h3" lang="${e.language}">${esc(e.destination)}</h2>
+  <p class="fe-trip-meta tiny"><span>${esc(e.dates)}</span>${e.days?`<span>${esc(e.days)}</span>`:''}</p>
+  <p class="fe-caption" lang="${e.language}">${esc(e.caption)}</p>
+  ${albumGrid(e,e.destination)}
+  ${ctaRow(e.href,e.linkLabel,photoCount(e.photos.length).replace('<span>','<span class="tiny">'))}</div>`,
 
  monthly:e=>`<div class="fe-monthly"><div class="fe-collage" role="group" aria-label="Cover collage, illustrative images">${e.collage.map((p,i)=>`<img class="c${i}" src="${esc(p.src)}" alt="${esc(p.alt)}" loading="lazy" decoding="async">`).join('')}</div>
   <div class="fe-monthly-text"><h2 class="h3"><a href="${esc(e.href)}">${esc(e.title)}</a></h2>
