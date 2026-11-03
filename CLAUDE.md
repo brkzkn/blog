@@ -20,7 +20,7 @@ This repo currently holds a **static HTML prototype** (`prototype/`) that is des
 ```
 prototype/            static prototype, open any page directly or serve with `python3 -m http.server`
   index.html          home (feed + sidebar)
-  portfolio.html      Work
+  work.html           Work (was portfolio.html)
   architecture-notes.html   case study detail
   projects.html, smart-home.html
   life.html, london-guide.html (travel detail), october-2026.html (culture diary)

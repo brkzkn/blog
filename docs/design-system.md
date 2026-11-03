@@ -34,7 +34,7 @@ Dark theme overrides the same variables under `[data-theme="dark"]`. Images are 
 - Feed item: date column (serif date, year, type label) with a small diamond marker, then content. Type decides size: Trip gets a 2:1 cover, Note gets up to three 1:1 photos, Gear gets a 110px thumbnail card, Writing gets title + excerpt only.
 - Sidebar module: `.sidebar-module` with `.sidebar-kicker`; hairline separators, no boxes. Order on home: Stay in touch, Elsewhere, Now, Search, Browse by topic, Archive, Take a different path.
 - Chips: `.filters > *` pill, active is inverted (ink on ground). `.tag` small outlined pill; `.tag.fill` blue tint, `.tag.warm` orange tint.
-- `.panel` bordered card for Work decision/trade-off blocks; `.box` + `.conn/.vconn` for system maps built from HTML elements (no SVG diagrams).
+- `.panel` bordered card for Work decision/trade-off blocks; `.box` + `.conn/.vconn` for small system maps built from HTML elements. The case-study illustrations on Work are original inline SVG figures (`.wk-fig` frame, `.wk-art` drawing): flat, hairline strokes, every colour from the theme variables so they follow light and dark, an `aria-label` and a one-line caption. Solid lines are requests, dashed lines are events, orange marks the one thing to look at.
 - `.ph` placeholder: hatched tinted block with caption; ratio classes `.r169 .r43 .r11 .r34 .r21 .r32`.
 - Ratings: `.stars` five 10px dots in orange, `.off` for empty.
 
@@ -42,3 +42,5 @@ Dark theme overrides the same variables under `[data-theme="dark"]`. Images are 
 
 Do: generous whitespace, one bold accent per page, concrete captions, sentence case.
 Don't: shadows, gradients, glassmorphism, equal visual weight for every section, nine-item nav, stock photos of people coding, ALL-CAPS labels outside kickers.
+
+Imagery and licences: only the owner's own photos or illustrations made for this site (vector drawings, diagrams). No stock photography and no third-party icon or logo sets, so there is nothing to license or attribute.
