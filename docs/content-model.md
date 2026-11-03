@@ -57,6 +57,8 @@ Restaurants and trips may link to a detail page (`/life/restaurants/<slug>/`, `/
 ## Separate collections
 
 - `work`: case studies. Fields: client (anonymised), industry, years, role, stack, summary, sections (context, problem, constraints, decisions, boundaries, operations, outcomes, lessons), `featured` (bool, default false) and `featuredOrder` (number), `cover` (optional photo, 56:19; when absent the renderer shows the case study's diagram, `diagram`, an SVG file). Featured, published studies feed the home strip: up to three, see ADR-004.
+  - Required: summary (lede), the facts block (role, duration, stack), `problem` and `decisions` (each with its trade-off). Optional: context, constraints, system map, operations, outcomes, lessons, `cover`.
+  - An empty section is not rendered. The "Jump to" links are built from the sections that exist and are hidden when there are fewer than three. The outcome strip shows only when at least two real figures exist; placeholders like `[n]` block publishing. Section order is fixed so every case reads the same way. The closing call to action is always shown.
 - `gear`: one file per device. Fields: name, category (computing, audio-video, wearables, home-network, workshop, play, everyday), since, until (optional), status (in-use | retired | sold), take (one line), notes (optional body), related posts.
 - `pages`: about, now.
 
