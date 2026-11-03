@@ -43,4 +43,6 @@ Dark theme overrides the same variables under `[data-theme="dark"]`. Images are 
 Do: generous whitespace, one bold accent per page, concrete captions, sentence case.
 Don't: shadows, gradients, glassmorphism, equal visual weight for every section, nine-item nav, stock photos of people coding, ALL-CAPS labels outside kickers.
 
+Case-study image slot: each Work card has one `figure.wk-fig`. It holds the drawing (`svg`) until the owner has a real photo, then the `img` replaces the `svg` inside the same figure. Ratio 56:19 (`object-fit: cover`), descriptive `alt`, keep the caption. A drawing replaced by a photo can move to the case-study detail page. Photos are checked for client names, product names and addresses before upload, because case studies are anonymised.
+
 Imagery and licences: only the owner's own photos or illustrations made for this site (vector drawings, diagrams). No stock photography and no third-party icon or logo sets, so there is nothing to license or attribute.

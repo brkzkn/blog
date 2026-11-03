@@ -56,7 +56,7 @@ Restaurants and trips may link to a detail page (`/life/restaurants/<slug>/`, `/
 
 ## Separate collections
 
-- `work`: case studies. Fields: client (anonymised), industry, years, role, stack, summary, sections (context, problem, constraints, decisions, boundaries, operations, outcomes, lessons), `featured` (bool, default false) and `featuredOrder` (number). Featured, published studies feed the home strip: up to three, see ADR-004.
+- `work`: case studies. Fields: client (anonymised), industry, years, role, stack, summary, sections (context, problem, constraints, decisions, boundaries, operations, outcomes, lessons), `featured` (bool, default false) and `featuredOrder` (number), `cover` (optional photo, 56:19; when absent the renderer shows the case study's diagram, `diagram`, an SVG file). Featured, published studies feed the home strip: up to three, see ADR-004.
 - `gear`: one file per device. Fields: name, category (computing, audio-video, wearables, home-network, workshop, play, everyday), since, until (optional), status (in-use | retired | sold), take (one line), notes (optional body), related posts.
 - `pages`: about, now.
 

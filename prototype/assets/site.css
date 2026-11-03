@@ -442,3 +442,6 @@ svg.fe-platform-mark{background:none;fill:none;stroke:currentColor;stroke-width:
 @media(max-width:1000px){.wk-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.wk-fig{max-width:560px}.wk-map{margin-left:0}}
 @media(max-width:640px){.wk-tiles{grid-template-columns:minmax(0,1fr)}.wk-art text{font-size:20px}.wk-art .t2{font-size:16px}}
 
+
+/* 2026-11-03 Work: a real photo can take the place of a case-study drawing; same frame, same 56:19 ratio so cards stay level */
+.wk-fig img{display:block;width:100%;height:auto;aspect-ratio:560/190;object-fit:cover}
