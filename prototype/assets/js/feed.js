@@ -96,33 +96,31 @@ const btn=(attr,value,label)=>`<button type="button" ${attr}="${value}" aria-pre
 document.querySelectorAll('[data-feed-topics]').forEach(n=>n.innerHTML=btn('data-feed-category','all','All entries')+catList.map(([k,l])=>btn('data-feed-category',k,l)).join(''));
 document.querySelectorAll('[data-feed-months]').forEach(n=>n.innerHTML=btn('data-feed-month','all','All months')+monthKeys.map(k=>btn('data-feed-month',k,monthName(k))).join(''));
 root.querySelector('[data-feed-filters]').innerHTML=['all',...catList.map(c=>c[0])].map(k=>`<button type="button" data-feed-category="${k}" aria-pressed="false">${esc(k==='all'?'All':categoryLabels[k])}</button>`).join('');
-root.querySelector('[data-feed-types]').innerHTML=[['all','All types'],...window.FEED_TYPES].map(([k,l])=>`<button type="button" data-feed-type="${k}" aria-pressed="false">${esc(l)}</button>`).join('');
 
 // ---- filtering ----
-const state={category:'all',type:'all',month:'all',query:''};
+const state={category:'all',month:'all',query:''};
 const summary=root.querySelector('[data-feed-summary]'),empty=root.querySelector('[data-feed-empty]');
 const searchInputs=[...document.querySelectorAll('[data-feed-search]')];
-const ok=(e,except)=>(except==='category'||state.category==='all'||e.category===state.category)&&(except==='type'||state.type==='all'||e.type===state.type)&&(except==='month'||state.month==='all'||parts(e).month===state.month)&&(except==='query'||!state.query||haystack.get(e.id).includes(state.query));
+const ok=(e,except)=>(except==='category'||state.category==='all'||e.category===state.category)&&(except==='month'||state.month==='all'||parts(e).month===state.month)&&(except==='query'||!state.query||haystack.get(e.id).includes(state.query));
 const setText=(node,v)=>{if(node.textContent!==String(v))node.textContent=String(v)};
 function apply(){
  let shown=0,last=null,first=null;
  sorted.forEach(e=>{const n=nodes.get(e.id),show=ok(e);n.hidden=!show;n.classList.remove('is-first','is-last');if(show){shown++;first=first||n;last=n}});
  first?.classList.add('is-first');last?.classList.add('is-last');
- const active=state.category!=='all'||state.type!=='all'||state.month!=='all'||!!state.query;
+ const active=state.category!=='all'||state.month!=='all'||!!state.query;
  // the count only appears once a filter is on; an unfiltered feed needs no "showing 14 of 14"
  setText(summary,!active?'':shown?`Showing ${shown} of ${sorted.length} entries`:'No entries match');empty.hidden=shown!==0;
- document.querySelectorAll('[data-feed-type]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.feedType===state.type)));
  document.querySelectorAll('[data-feed-category]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.feedCategory===state.category)));
  document.querySelectorAll('[data-feed-month]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.feedMonth===state.month)));
  document.querySelectorAll('[data-count-category]').forEach(n=>setText(n,sorted.filter(e=>(n.dataset.countCategory==='all'||e.category===n.dataset.countCategory)&&ok(e,'category')).length));
  document.querySelectorAll('[data-count-month]').forEach(n=>setText(n,sorted.filter(e=>(n.dataset.countMonth==='all'||parts(e).month===n.dataset.countMonth)&&ok(e,'month')).length));
  document.querySelectorAll('[data-feed-reset]').forEach(b=>{b.disabled=!active});
 }
-function reset(){state.category='all';state.type='all';state.month='all';state.query='';searchInputs.forEach(i=>i.value='');apply();
+function reset(){state.category='all';state.month='all';state.query='';searchInputs.forEach(i=>i.value='');apply();
  const f=document.activeElement;if(!f||f===document.body||f.disabled||f.closest('[hidden]'))root.querySelector('[data-feed-filters] button')?.focus()}
 document.addEventListener('click',ev=>{
- const c=ev.target.closest('[data-feed-category]'),t=ev.target.closest('[data-feed-type]'),m=ev.target.closest('[data-feed-month]'),r=ev.target.closest('[data-feed-reset]');
- if(c){state.category=c.dataset.feedCategory;apply()}else if(t){state.type=t.dataset.feedType;apply()}else if(m){state.month=m.dataset.feedMonth;apply()}else if(r&&!r.disabled)reset();
+ const c=ev.target.closest('[data-feed-category]'),m=ev.target.closest('[data-feed-month]'),r=ev.target.closest('[data-feed-reset]');
+ if(c){state.category=c.dataset.feedCategory;apply()}else if(m){state.month=m.dataset.feedMonth;apply()}else if(r&&!r.disabled)reset();
 });
 // long feeds: one tap from the last entry back to the filters (focus follows, so keyboard users land on the first pill)
 const toolbar=root.querySelector('.feed-toolbar');

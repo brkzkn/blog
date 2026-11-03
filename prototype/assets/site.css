@@ -301,16 +301,9 @@ a.fe-source:hover{color:var(--ink);border-color:var(--orange)}
  .feed-lightbox figcaption{padding-inline:14px}.feed-lightbox-bar{padding-inline:14px}.feed-lightbox-bar button{padding:0 12px}
 }
 
-/* 2026-11-02: feed polish. Linked titles read as links, one origin label in the meta column, a quieter filter area, a text-style type row, stronger type markers. */
-/* filter area: pills, then the type row; the count and "clear" share one line that only fills in once a filter is on */
+/* 2026-11-02: feed polish. Linked titles read as links, one origin label in the meta column, a quieter filter area, stronger type markers. */
+/* filter area: the topic pills; the count and "clear" share one line that only fills in once a filter is on */
 .feed-toolbar{min-width:0;gap:12px}
-.feed-types{display:flex;align-items:baseline;gap:6px 14px;min-width:0}
-.feed-types-label{flex:none;font:500 11px/1.4 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--ink3)}
-.feed-types-list{display:flex;flex-wrap:wrap;gap:2px 14px;min-width:0}
-.feed-types-list button{min-height:32px;padding:0;border:0;border-bottom:1px solid transparent;border-radius:0;background:transparent;color:var(--ink2);font:13px var(--sans);cursor:pointer}
-.feed-types-list button:hover{color:var(--ink);border-bottom-color:var(--line2)}
-.feed-types-list button[aria-pressed=true]{color:var(--ink);font-weight:500;border-bottom-color:var(--ink)}
-.feed-types-list button:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
 .feed-status{display:flex;align-items:center;gap:6px 16px;flex-wrap:wrap;min-height:34px}
 .timeline-stream .feed-status .filter-summary{margin:0}
 .feed-status .filter-summary:empty{display:none}
@@ -344,10 +337,6 @@ a.fe-source:hover{color:var(--ink);border-color:var(--orange)}
 @media(max-width:640px){
  .timeline-origin{margin-top:0}
  .timeline-meta{row-gap:4px}
- .feed-types{flex-direction:column;align-items:stretch;gap:0}
- .feed-types-list{flex-wrap:nowrap;overflow-x:auto;gap:2px 20px;padding-bottom:4px;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent)}
- .feed-types-list::-webkit-scrollbar{display:none}
- .feed-types-list button{flex:none;white-space:nowrap}
  .fe-monthly{grid-template-columns:minmax(0,1fr);align-items:start}.fe-collage{aspect-ratio:4/3;min-height:0;max-width:360px}
  .fe-log-body.has-img{grid-template-columns:minmax(0,1fr)}.fe-log-img{max-width:320px}
 }
