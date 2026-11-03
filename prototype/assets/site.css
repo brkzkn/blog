@@ -342,3 +342,34 @@ a.fe-source:hover{color:var(--ink);border-color:var(--orange)}
 }
 /* short entries: the meta column (date, category, type, origin) is taller than a two-line note, which left an uneven gap under it; let it hang into the bottom padding instead of stretching the row */
 @media(min-width:641px){.fe-entry .timeline-meta{margin-bottom:-30px}}
+
+/* 2026-11-03: home page balance. Hero links, "what I do" with a contact line, three case studies, and a short personal strip before the journal. */
+.hero-actions{display:flex;flex-wrap:wrap;gap:12px}
+.home-band{padding:48px 0;border-bottom:1px solid var(--line)}
+.home-band .cat{font-size:11px;letter-spacing:.1em;margin:0}
+.home-band h2{font-size:32px;margin:8px 0 12px}
+.home-band-grid{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:32px 48px;align-items:start}
+.home-skills,.home-facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin:0;padding:0;list-style:none}
+.home-skills li,.home-facts li{padding-top:14px;border-top:1px solid var(--line2);min-width:0}
+.home-skills h3{font:400 21px/1.25 var(--serif);margin-bottom:6px}
+.home-contact{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 28px;padding-top:22px;border-top:1px solid var(--line);scroll-margin-top:24px}
+.home-contact p{margin:0}
+.home-beyond{border-bottom:0;padding-bottom:8px}
+.home-beyond-head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px 24px;flex-wrap:wrap;margin-bottom:22px}
+.home-beyond-head h2{margin-bottom:0}.home-beyond-head .link{font-size:15px;padding-bottom:4px}
+.home-facts .tiny{margin:0 0 6px;font:500 11px/1.4 var(--sans);letter-spacing:.08em;text-transform:uppercase}
+.home-facts p:not(.tiny){margin:0;font:400 19px/1.4 var(--serif);color:var(--ink)}
+.selected-more{display:grid;grid-template-columns:200px minmax(0,1fr) minmax(0,1fr);gap:24px 32px;padding:22px 0 32px;border-top:1px solid var(--line2)}
+.selected-all{align-self:start;font-size:15px;color:var(--ink);text-decoration:underline;text-underline-offset:5px;text-decoration-thickness:1px;text-decoration-color:var(--line2)}.selected-all:hover{color:var(--orange);text-decoration-color:var(--orange)}
+.selected-item{display:flex;flex-direction:column;gap:6px;min-width:0;cursor:default}
+.selected-item h3{font:400 21px/1.25 var(--serif);margin:0}.selected-item p{margin:0}
+@media(max-width:1000px){
+ .home-band{padding:40px 0}
+ .home-band-grid{grid-template-columns:minmax(0,1fr)}
+ .selected-more{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.selected-all{grid-column:1/-1}
+}
+@media(max-width:640px){
+ .home-band{padding:34px 0}.home-band h2{font-size:28px}
+ .home-skills,.home-facts,.selected-more{grid-template-columns:minmax(0,1fr)}
+ .hero-actions .btn{flex:1 1 auto}
+}
