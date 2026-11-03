@@ -56,3 +56,5 @@ Folder: `src/content/posts/2026/2026-10-30-kadikoy-kalamar/index.tr.md` (+ `inde
 ## Home feed prototype (2026-11-01)
 
 The prototype home feed renders `prototype/assets/js/feed-data.js` (sample entries) with `feed.js`. Shared fields: `id`, `type`, `category`, `publishedAt`, `language`, `tags`. Title, cover, rating and detail link are optional per type. Books, films, series, restaurants and devices are `review` entries with a `subject`, not separate types. The older `trip`, `food`, `home`, `print`, `culture`, `gear-added` values above are now categories or review subjects.
+
+The home feed filters by **category** (topic), by month and by search. `type` is not a filter: it decides how a post renders and is shown as a label in the meta column. It can be inferred (no title and photos = album, titled = writing, default = note), so the only choice at posting time is the category.
