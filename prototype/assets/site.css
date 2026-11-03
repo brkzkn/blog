@@ -362,3 +362,25 @@ a.fe-source:hover{color:var(--ink);border-color:var(--orange)}
 .selected-arrow{font-size:18px;line-height:1;color:var(--ink)}
 @media(max-width:1000px){.selected-grid{grid-template-columns:minmax(0,1fr);gap:16px;padding-block:22px}.selected-head{flex-direction:row;flex-wrap:wrap;align-items:center;gap:6px 14px}.selected-all{margin:0 0 0 auto}}
 @media(max-width:640px){.selected-grid{padding-block:20px;gap:12px}.selected-list,.selected-list[data-count]{grid-template-columns:minmax(0,1fr);gap:14px}.selected-item{gap:6px;padding-top:10px}.selected-item.is-lead h2{font-size:21px}.selected-item h3{font-size:18px}}
+
+/* 2026-11-03: feed type review page (feed-types.html). Not part of the site navigation. */
+.review-intro{padding:48px 0 28px;border-bottom:1px solid var(--line)}
+.review-intro .cat{font-size:11px;letter-spacing:.1em;margin:0 0 8px}
+.review-intro h1{margin-bottom:14px}.review-intro .small{margin-top:12px}
+.review-type{padding:36px 0 12px;border-top:1px solid var(--line);scroll-margin-top:12px}.review-type:first-child{border-top:0;padding-top:28px}
+.review-head{display:flex;flex-direction:column;gap:8px;margin-bottom:22px;max-width:640px}
+.review-head .cat{font-size:11px;letter-spacing:.1em;margin:0}.review-head h2{font-size:32px}.review-head p{margin:0}
+code{font:12px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;padding:2px 5px;border-radius:3px;background:var(--blue-tint);color:var(--blue-ink);letter-spacing:0}
+.review-variants{margin:4px 0 0;padding-left:20px;font-size:14px;line-height:1.5;color:var(--ink2)}.review-variants li{padding-left:4px}.review-variants b{font-weight:500;color:var(--ink)}
+.review-note{padding:10px 14px;border-left:2px solid var(--blue);background:var(--surface);border-radius:0 3px 3px 0}.review-note b{display:block;font-weight:500;color:var(--ink);margin-bottom:2px}
+.review-variant-row{display:block}
+.review-variant{display:inline-block;margin-top:8px;padding:3px 6px;border:1px solid var(--line2);border-radius:3px;font:500 11px/1.4 var(--sans);color:var(--ink2);max-width:100%;overflow-wrap:anywhere}
+.review-main .timeline-origin{margin-top:8px}
+@media(min-width:641px){.review-main .fe-entry .timeline-meta{margin-bottom:0}}
+.review-toc .sidebar-shortcuts>a:last-child{border-bottom:0}
+@media(min-width:1001px){.review-toc{position:sticky;top:16px}}
+@media(max-width:640px){.review-variant{margin-top:0}.review-variant-row{flex:0 0 100%}.review-head h2{font-size:28px}}
+/* a review without a cover (film, venue) uses the full width instead of an empty cover column */
+.fe-review.no-cover{grid-template-columns:minmax(0,1fr)}
+/* the "EN · Sample" label uses the secondary ink colour; the default .mock grey was borderline at 11px */
+.timeline-origin{color:var(--ink2)}

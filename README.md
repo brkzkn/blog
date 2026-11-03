@@ -12,6 +12,8 @@ python3 -m http.server 8080
 # open http://localhost:8080
 ```
 
+`prototype/feed-types.html` shows every home-feed entry type with its variants in one place (not linked from the site). Add a variant in `assets/js/feed-type-examples.js`.
+
 Pages also open directly from disk. Theme and language preferences are stored in `localStorage`.
 
 ## For Claude Code

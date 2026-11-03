@@ -25,6 +25,7 @@ prototype/            static prototype, open any page directly or serve with `py
   projects.html, smart-home.html
   life.html, london-guide.html (travel detail), october-2026.html (culture diary)
   gear.html, note.html (single short post), blog.html, agentic-workflows.html (article), profile.html (About)
+  feed-types.html     review page: every home-feed entry type with its variants, drawn by the same code as the feed (assets/js/feed-render.js). Not in the nav.
   assets/site.css     the whole design system; tokens on :root, dark theme under [data-theme=dark]
   assets/js/site.js   menu, feed filters + search, lightbox, theme/language toggles, UI string dictionary
   assets/images/      mock images (illustrative, replace with real photos)

@@ -74,7 +74,8 @@ function translatePattern(t){let m;
  if(m=t.match(/^Showing (\d+) of (\d+) entries$/))return `${m[2]} içerikten ${m[1]} tanesi gösteriliyor`;
  if(m=t.match(/^(\d+) photos?$/))return `${m[1]} fotoğraf`;
  if(m=t.match(/^(\d+) min read$/))return `${m[1]} dk okuma`;
- if(m=t.match(/^(?:Finished )?(\d{1,2} )?(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)( \d{4})?$/)){const out=(m[1]||'')+trMonths[enMonths.indexOf(m[2])]+(m[3]||'');return t.startsWith('Finished ')?'Bitirildi: '+out:out}
+ if(m=t.match(/^(Finished |Watched )?(\d{1,2} )?(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)( \d{4})?$/)){const out=(m[2]||'')+trMonths[enMonths.indexOf(m[3])]+(m[4]||'');return m[1]?(m[1]==='Finished '?'Bitirildi: ':'İzlendi: ')+out:out}
+ if(m=t.match(/^Review · (.+)$/)){const subject={Book:'Kitap',Device:'Cihaz',Film:'Film',Series:'Dizi',Place:'Mekân',Restaurant:'Restoran',Game:'Oyun',Album:'Albüm',Podcast:'Podcast'}[m[1]];if(subject)return 'Değerlendirme · '+subject}
  if(m=t.match(/^(January|February|March|April|May|June|July|August|September|October|November|December) (\d{4})$/))return trMonthsLong[enMonthsLong.indexOf(m[1])]+' '+m[2];
  if(m=t.match(/^Written in (English|Turkish)$/))return m[1]==='English'?'İngilizce yazıldı':'Türkçe yazıldı';
  return null}
