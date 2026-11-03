@@ -349,7 +349,9 @@ a.fe-source:hover{color:var(--ink);border-color:var(--orange)}
 .selected-head{display:flex;flex-direction:column;align-items:flex-start;gap:8px}
 .selected-head .cat{margin:0;letter-spacing:.06em}
 .selected-all{margin-top:4px;font-size:14px;color:var(--ink);text-decoration:underline;text-underline-offset:5px;text-decoration-thickness:1px;text-decoration-color:var(--line2)}.selected-all:hover{color:var(--orange);text-decoration-color:var(--orange)}
-.selected-list{display:grid;grid-template-columns:1.3fr 1fr;gap:0 40px;list-style:none;margin:0;padding:0}
+.selected-list{display:grid;grid-template-columns:minmax(0,1fr);gap:0 40px;list-style:none;margin:0;padding:0}
+.selected-list[data-count="2"]{grid-template-columns:1.3fr 1fr}
+.selected-list[data-count="3"]{grid-template-columns:1.45fr 1fr 1fr;gap:0 28px}
 .selected-item{display:flex;flex-direction:column;gap:8px;height:100%;padding-top:12px;border-top:2px solid var(--line2);color:var(--ink);min-width:0;cursor:pointer}
 .selected-item .tiny{display:flex;justify-content:space-between;gap:8px;margin:0}
 .selected-item h2,.selected-item h3{margin:0;font:400 19px/1.25 var(--serif);text-wrap:balance}
@@ -359,4 +361,4 @@ a.fe-source:hover{color:var(--ink);border-color:var(--orange)}
 .selected-item:hover h2,.selected-item:hover h3{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:5px}
 .selected-arrow{font-size:18px;line-height:1;color:var(--ink)}
 @media(max-width:1000px){.selected-grid{grid-template-columns:minmax(0,1fr);gap:16px;padding-block:22px}.selected-head{flex-direction:row;flex-wrap:wrap;align-items:center;gap:6px 14px}.selected-all{margin:0 0 0 auto}}
-@media(max-width:640px){.selected-grid{padding-block:20px;gap:12px}.selected-list{grid-template-columns:minmax(0,1fr);gap:14px}.selected-item{gap:6px;padding-top:10px}.selected-item.is-lead h2{font-size:21px}.selected-item h3{font-size:18px}}
+@media(max-width:640px){.selected-grid{padding-block:20px;gap:12px}.selected-list,.selected-list[data-count]{grid-template-columns:minmax(0,1fr);gap:14px}.selected-item{gap:6px;padding-top:10px}.selected-item.is-lead h2{font-size:21px}.selected-item h3{font-size:18px}}

@@ -11,6 +11,7 @@
 - Rebuild home, note, writing, gear, about from the prototype markup. Keep pixel parity; the prototype is the design source of truth.
 - GitHub Actions deploy to Pages; `CNAME` file; DNS per the owner's registrar (A records to GitHub Pages, www CNAME).
 - Write ADR-001 (Astro), ADR-002 (URL scheme), ADR-003 (content storage).
+- Home "selected architecture" strip: render from `work` entries per ADR-004 (0 to 3 cards, no placeholders).
 
 ## Phase 2 — real content
 - Owner provides: ~5 real notes, 1 real case study, gear list, About photos.
