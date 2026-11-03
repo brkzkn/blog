@@ -445,3 +445,31 @@ svg.fe-platform-mark{background:none;fill:none;stroke:currentColor;stroke-width:
 
 /* 2026-11-03 Work: a real photo can take the place of a case-study drawing; same frame, same 56:19 ratio so cards stay level */
 .wk-fig img{display:block;width:100%;height:auto;aspect-ratio:560/190;object-fit:cover}
+
+/* 2026-11-03 Case study page: system map flow that wraps cleanly, outcome strip, section links, closing call to action */
+.map-lanes .lane{border-style:solid;border-color:var(--line)}
+.map-lanes .chips{display:flex;gap:16px;flex-wrap:wrap}
+.map-lanes .flow{display:grid;grid-template-columns:minmax(0,1fr) 28px minmax(0,1fr) 28px minmax(0,1.15fr) 28px minmax(0,1fr);align-items:stretch;gap:0 10px}
+.map-lanes .flow .conn{align-self:center;min-width:0;flex:none}
+.map-lanes .down-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+@media(max-width:1000px){
+.map-lanes .flow{grid-template-columns:minmax(0,1fr);gap:0}
+.map-lanes .flow .conn{width:1px;height:22px;margin:0 auto}
+.map-lanes .flow .conn::after{right:auto;left:-3px;top:auto;bottom:-1px;border:3.5px solid transparent;border-top:6px solid var(--ink)}
+.map-lanes .down-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:640px){
+.map-lanes{padding:16px!important;gap:22px!important}.map-lanes .lane{padding:16px 12px 14px}
+.map-lanes .chips{gap:8px}.map-lanes .chips .box{padding:8px 10px;font-size:13px}
+.map-lanes .down-grid{grid-template-columns:minmax(0,1fr);gap:12px}}
+.cs-glance{padding:28px 0;border-top:1px solid var(--line)}
+.cs-glance ul{list-style:none;margin:14px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.cs-glance li{display:flex;flex-direction:column;gap:4px;padding-left:16px;border-left:1px solid var(--line)}
+.cs-glance .fig{font:400 36px/1.1 var(--serif);color:var(--ink)}
+.cs-toc{display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px;margin-top:22px;padding-top:16px;border-top:1px solid var(--line)}
+.cs-toc a{font-size:14px;color:var(--ink2);text-decoration:none;border-bottom:1px solid var(--line2)}
+.cs-toc a:hover,.cs-toc a:focus-visible{color:var(--blue);border-color:var(--blue)}
+.cs-cta{padding:40px 0;border-top:1px solid var(--line)}
+.cs-cta .wrap{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
+.cs-cta .h4{max-width:620px;margin-top:6px}
+h2[id]{scroll-margin-top:96px}
+@media(max-width:1000px){.cs-glance ul{grid-template-columns:minmax(0,1fr);gap:16px}}

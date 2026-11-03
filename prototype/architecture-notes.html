@@ -20,9 +20,18 @@
 </section>
 
 
+<section class="cs-glance" aria-labelledby="glance-title"><div class="wrap">
+  <p class="cat" id="glance-title">Outcome at a glance</p>
+  <ul>
+    <li><span class="fig">4 → 1</span><span class="small">deploy approvals needed for a brand-level change</span></li>
+    <li><span class="fig">2</span><span class="small">read-model rebuilds in production, both uneventful</span></li>
+    <li><span class="fig">[n]</span><span class="small">fewer “stuck order” tickets per month <span class="mock">add figure</span></span></li>
+  </ul>
+  <nav class="cs-toc" aria-label="On this page"><span class="tiny">Jump to</span><a href="#context">Context</a><a href="#problem">Problem</a><a href="#system-map">System map</a><a href="#decisions">Decisions</a><a href="#operations">Operations</a><a href="#outcomes">Outcomes</a></nav>
+</div></section>
 <section class="section tight" style="border-top: 1px solid var(--line)">
   <div class="wrap grid">
-    <div class="span3"><h2 class="h3">Business context</h2></div>
+    <div class="span3"><h2 class="h3" id="context">Business context</h2></div>
     <div class="span6 prose">
       <p>The group acquired its third and fourth brands within two years. Each came with its own storefront and its own promises to customers: next-day delivery, click and collect, split shipments. All of those promises ended up implemented as branches inside a single order service and a single shared database.</p>
       <p>Releases were weekly, coordinated by a release manager, and increasingly cancelled. The business case was framed around time to market for a new brand and the cost of support tickets about “orders stuck in processing.”</p>
@@ -36,7 +45,7 @@
 
 <section class="section tight" style="border-top: 1px solid var(--line)">
   <div class="wrap grid">
-    <div class="span3"><h2 class="h3">Architectural problem</h2></div>
+    <div class="span3"><h2 class="h3" id="problem">Architectural problem</h2></div>
     <div class="span6 prose">
       <p>The order lifecycle was spread across synchronous calls: storefront to order service, order service to payment provider, payment provider back to a webhook, webhook to warehouse API. Any link failing left the order in whatever state the last successful call had written. There was no record of attempts, only of final states.</p>
       <p>Underneath that, the real problem was ownership. Pricing, stock, fulfilment and notification rules all lived in the same codebase and the same tables, so no team could change a rule without a cross-team review.</p>
@@ -52,30 +61,30 @@
 <section class="section" style="border-top: 1px solid var(--line)">
   <div class="wrap">
     <div class="sechead" style="margin-bottom: 32px">
-      <h2 class="h2">System map after the rebuild</h2>
+      <h2 class="h2" id="system-map">System map after the rebuild</h2>
       <p class="small" style="max-width: 420px">Solid boxes are services the team owns. Dashed boxes are external or legacy. Arrows show the direction of commands and events, not every network call.</p>
     </div>
-    <div class="panel" style="padding: 36px; display: flex; flex-direction: column; gap: 28px; overflow-x: auto">
+    <div class="panel map-lanes" style="padding: 36px; display: flex; flex-direction: column; gap: 28px; overflow-x: auto">
       <div class="lane"><span class="lbl">Clients</span>
-        <div style="display: flex; gap: 16px; flex-wrap: wrap">
+        <div class="chips">
           <div class="box ext">Brand A storefront</div><div class="box ext">Brand B storefront</div><div class="box ext">Brand C storefront</div><div class="box ext">Brand D storefront</div><div class="box ext">Support console</div>
         </div>
       </div>
       <div class="vconn"></div>
       <div class="lane"><span class="lbl">Order domain</span>
-        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
-          <div class="box core" style="min-width: 190px"><b>Order API</b>Accepts commands, validates, writes order + outbox in one transaction</div>
+        <div class="flow">
+          <div class="box core"><b>Order API</b>Accepts commands, validates, writes order + outbox in one transaction</div>
           <div class="conn"></div>
-          <div class="box core" style="min-width: 190px"><b>Order store</b>PostgreSQL, one schema per service, credentials enforce the boundary</div>
+          <div class="box core"><b>Order store</b>PostgreSQL, one schema per service, credentials enforce the boundary</div>
           <div class="conn"></div>
-          <div class="box hot" style="min-width: 220px"><b>Event log</b>Kafka. Topics per aggregate: order, payment, shipment. Retained 30 days, compacted snapshots</div>
+          <div class="box hot"><b>Event log</b>Kafka. Topics per aggregate: order, payment, shipment. Retained 30 days, compacted snapshots</div>
           <div class="conn"></div>
-          <div class="box core" style="min-width: 190px"><b>Orchestrator</b>Saga per order; retries with backoff; dead-letter after 5 attempts</div>
+          <div class="box core"><b>Orchestrator</b>Saga per order; retries with backoff; dead-letter after 5 attempts</div>
         </div>
       </div>
       <div class="vconn"></div>
       <div class="lane"><span class="lbl">Downstream domains</span>
-        <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px">
+        <div class="down-grid">
           <div class="box"><b>Payments</b>Wraps three PSPs; idempotent capture</div>
           <div class="box"><b>Fulfilment</b>Anti-corruption layer over legacy warehouse</div>
           <div class="box"><b>Notifications</b>Email, SMS, push; brand templates</div>
@@ -84,7 +93,7 @@
       </div>
       <div class="vconn"></div>
       <div class="lane"><span class="lbl">Legacy and external</span>
-        <div style="display: flex; gap: 16px; flex-wrap: wrap">
+        <div class="chips">
           <div class="box ext">Warehouse (SOAP)</div><div class="box ext">PSP 1</div><div class="box ext">PSP 2</div><div class="box ext">PSP 3</div><div class="box ext">Carrier APIs</div>
         </div>
       </div>
@@ -96,7 +105,7 @@
 <section class="section" style="border-top: 1px solid var(--line)">
   <div class="wrap">
     <div class="sechead">
-      <h2 class="h2">Key decisions and their trade-offs</h2>
+      <h2 class="h2" id="decisions">Key decisions and their trade&#8209;offs</h2>
     </div>
     <div class="g2" style="gap: 24px">
       <div class="panel col" style="gap: 12px">
@@ -131,7 +140,7 @@
 <section class="section" style="border-top: 1px solid var(--line)">
   <div class="wrap grid">
     <div class="span6 col" style="gap: 20px">
-      <h2 class="h3">Operational concerns</h2>
+      <h2 class="h3" id="operations">Operational concerns</h2>
       <ul class="list">
         <li><span class="num">01</span><span class="small" style="color: var(--ink)"><strong style="font-weight: 500">Observability.</strong> Every event carries the order id as a trace attribute; the support console links straight to the trace.</span></li>
         <li><span class="num">02</span><span class="small" style="color: var(--ink)"><strong style="font-weight: 500">Replay.</strong> Read models can be rebuilt from the log; this was used twice in the first quarter to fix projection bugs.</span></li>
@@ -140,7 +149,7 @@
       </ul>
     </div>
     <div class="span6 col" style="gap: 20px">
-      <h2 class="h3">Outcomes and lessons</h2>
+      <h2 class="h3" id="outcomes">Outcomes and lessons</h2>
       <div class="g2" style="gap: 16px">
         <div class="panel warm"><p class="h2" style="font-size: 40px">[n]</p><p class="small">fewer “stuck order” tickets per month <span class="mock">add figure</span></p></div>
         <div class="panel warm"><p class="h2" style="font-size: 40px">4 → 1</p><p class="small">deploy approvals needed for a brand-level change</p></div>
@@ -154,6 +163,10 @@
   </div>
 </section>
 
+<section class="cs-cta"><div class="wrap">
+  <div><p class="cat">Working on something similar?</p><p class="h4">If your order flow, release process or event backbone looks like this, I am glad to talk it through.</p></div>
+  <a class="btn primary" href="profile.html#social-profiles">Get in touch →</a>
+</div></section>
 <section class="section tight" style="border-top: 1px solid var(--line)">
   <div class="wrap" style="display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; align-items: center">
     <a class="link" href="work.html">Back to all work</a>
