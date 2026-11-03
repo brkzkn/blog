@@ -24,6 +24,19 @@
 - Email digest wired to the RSS feed.
 - WordPress archive import: keep original dates and slugs, redirect old URLs.
 
+## Launch cleanup: remove prototype and placeholder markers
+Do this while porting to Astro; none of these belong on the live site. Items marked (keep) look similar but stay.
+- **Header banner** "DESIGN PREVIEW · Stories, product ownership, career examples and metrics are sample content." (`.demo-notice`, on every page). Drop it from the `Base` layout.
+- **Footer line** "V4.2 preview · Sample entries and illustrative images" (every page). Keep the copyright line.
+- **"EN · Sample" label in the feed's left column** (`origin()` in `feed-render.js`): remove the "Sample" part only. **(keep) the original-language marker "EN" / "TR"**; the site rules require it on every post.
+- **`sample: true`** on every feed entry in `feed-data.js`, and the **`.mock` chips** it drives: "Fictional", "Fictional place, sample content.", "Fictional book/film and author, sample content.", "Illustrative case study", "Sample preview · Full entry coming later", "Preview image is a placeholder drawn in code", "Illustrative image" (photo viewer), "Fictional link, not clickable".
+- **Feed footer** "End of the sample journal."; **subscribe note** "Subscriptions are not connected yet in this preview." (remove once the provider is wired).
+- **Bracketed placeholders**, for example `[hello@yourdomain]`, `[Reservation link or phone number]`, `[Open to consulting...]`, `[metric]`, `[book]`: replace with real text or delete the line.
+- **Placeholder link targets:** the second "selected architecture" card points at `architecture-notes.html` until it has its own page (ADR-004); the "Restaurant details" and "Read the London guide" buttons point at sample pages.
+- **Mock images, posters and platform monograms:** replace with real photos; film posters come from the owner; add platform logos only with permission.
+- **`prototype/feed-types.html`** (the feed type review page): keep it as a dev-only page or exclude it from the production build (and keep it `noindex`).
+- **Sample copy on About, Work, Life, Gear, Projects pages** (Design-preview banner, sample case studies, `mock` tags): replace as real content arrives (Phase 2).
+
 ## Open issues from the prototype review
 1. Subscribe form not connected.
 2. Gear/Life filters visual only.
