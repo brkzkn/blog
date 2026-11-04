@@ -1,0 +1,107 @@
+---
+// Restaurant note (prototype/restaurant.html). Content: posts with type: restaurant. Body conventions: src/lib/life-body.ts.
+import Base from '../../../layouts/Base.astro';
+import OriginChip from '../../../components/life/OriginChip.astro';
+import Stars from '../../../components/life/Stars.astro';
+import { getPosts, postSlug } from '../../../lib/posts';
+import { parseBody, cells, inline, fullDate, isoDay } from '../../../lib/life-body';
+
+export async function getStaticPaths() {
+  const posts = (await getPosts()).filter((p) => p.data.type === 'restaurant');
+  return posts.map((post) => ({ params: { slug: postSlug(post) }, props: { post } }));
+}
+const { post } = Astro.props;
+const d = post.data;
+const body = parseBody(post.body ?? '');
+const sec = (n: string) => body.sections.get(n);
+const priceWord = ['', 'one', 'two', 'three', 'four'];
+const facts = (sec('Facts')?.list ?? []).map((r) => cells(r, 2));
+const ordered = sec('What we ordered');
+const dishes = (ordered?.list ?? []).map((r) => r.match(/^\*\*(.+?)\*\*:\s*(.+)$/)).filter((m): m is RegExpMatchArray => !!m);
+const verdict = sec('The verdict');
+const again = sec('Would I go again?');
+const photos = sec('Photographs');
+const practical = sec('Practical notes');
+const related = sec('Related')?.list ?? [];
+---
+<Base title={`${d.name ?? d.title}, restaurant note`} description={body.lede} originalLang={d.lang}>
+<div class="wrap original-language-note" data-original-note hidden></div><div class="wrap detail-back"><a class="link" href="/life/">← Back to Life</a></div>
+
+<section class="section tight">
+  <div class="wrap">
+    <div class="grid review-head">
+      <div class="span8 col">
+        <nav class="breadcrumb" aria-label="Breadcrumb"><ol><li><a href="/life/">Life</a></li><li>Culture</li><li aria-current="page">Restaurant</li></ol></nav>
+        <p class="small"><OriginChip lang={d.lang} />{d.sample && <> <span class="mock">Sample entry, fictional place</span></>}</p>
+        <h1 class="h1">{d.name ?? d.title}</h1>
+        <p class="lede">{body.lede}</p>
+        {d.rating && <p class="row review-rating"><Stars value={d.rating} /><span class="small">Rating: {d.rating}/5</span></p>}
+      </div>
+      <dl class="kv stacked span4">
+        {d.cuisine && <><dt>Cuisine</dt><dd>{d.cuisine}</dd></>}
+        {d.area && <><dt>Area</dt><dd>{d.area}</dd></>}
+        {d.price && <><dt>Price</dt><dd>{'₺'.repeat(d.price)} ({priceWord[d.price]} of four)</dd></>}
+        {d.visited && <><dt>Visited</dt><dd><time datetime={isoDay(d.visited)}>{fullDate(d.visited)}</time></dd></>}
+        {facts.map(([k, v]) => <><dt>{k}</dt><dd>{v}</dd></>)}
+      </dl>
+    </div>
+  </div>
+</section>
+
+{dishes.length > 0 && (
+<section class="section review-section">
+  <div class="wrap">
+    <div class="sechead"><h2 class="h2">What we ordered</h2>{ordered?.before[0] && <p class="small">{ordered.before[0]}</p>}</div>
+    <ul class="list dish-list">
+      {dishes.map((m) => <li><b>{m[1]}</b><span>{m[2]}</span></li>)}
+    </ul>
+    {ordered?.after[0] && <p class="small review-note">{ordered.after[0]}</p>}
+  </div>
+</section>
+)}
+
+{verdict && (
+<section class="section review-section">
+  <div class="wrap article-layout">
+    <div class="article-body">
+      <h2 class="h2">The verdict</h2>
+      <div class="prose">{verdict.before.map((p) => <p>{p}</p>)}</div>
+    </div>
+    {again && (
+    <aside class="article-aside panel col">
+      <h2 class="h3">Would I go again?</h2>
+      <p>{again.before[0]}</p>
+    </aside>
+    )}
+  </div>
+</section>
+)}
+
+{photos && photos.list.length > 0 && (
+<section class="section review-section">
+  <div class="wrap">
+    <div class="sechead"><h2 class="h2">Photographs</h2>{photos.before[0] && <p class="small">{photos.before[0]}</p>}</div>
+    <div class="g3 review-photos">
+      {photos.list.map((row) => { const [file, alt, cap] = cells(row, 3); return <figure><img src={`/assets/images/${file}`} alt={alt} width="700" height="700" loading="lazy"><figcaption class="small">{cap}</figcaption></figure>; })}
+    </div>
+  </div>
+</section>
+)}
+
+{practical && (
+<section class="section review-section">
+  <div class="wrap col">
+    <h2 class="h3">Practical notes</h2>
+    <ul class="review-practical">{practical.list.map((r) => <li>{r}</li>)}</ul>
+  </div>
+</section>
+)}
+
+{related.length > 0 && (
+<section class="section tight review-section">
+  <div class="wrap row review-related">
+    <span class="small">Related:</span>{related.map((r) => <Fragment set:html={inline(r)} />)}
+  </div>
+</section>
+)}
+</Base>

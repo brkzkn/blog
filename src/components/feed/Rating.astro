@@ -1,0 +1,4 @@
+---
+const { entry: e } = Astro.props;
+---
+{e.rating && <p class="fe-rating"><span class="stars" aria-hidden="true">{Array.from({ length: e.ratingMax ?? 5 }, (_, i) => <i class={i < e.rating ? undefined : 'off'}></i>)}</span><span class="fe-sr">Rating</span> <span>{e.rating}/{e.ratingMax ?? 5}</span></p>}

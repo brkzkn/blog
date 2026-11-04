@@ -1,0 +1,134 @@
+---
+// Monthly culture diary (prototype/october-2026.html). Content: posts with type: monthly; URL month comes from `date`.
+import Base from '../../../layouts/Base.astro';
+import OriginChip from '../../../components/life/OriginChip.astro';
+import Stars from '../../../components/life/Stars.astro';
+import { getPosts } from '../../../lib/posts';
+import { parseBody, cells, inline, longDate, isoMonth, monthName } from '../../../lib/life-body';
+
+export async function getStaticPaths() {
+  const posts = (await getPosts()).filter((p) => p.data.type === 'monthly');
+  return posts.map((post) => ({ params: { month: isoMonth(post.data.date) }, props: { post, all: posts } }));
+}
+const { post, all } = Astro.props;
+const d = post.data;
+const body = parseBody(post.body ?? '');
+const sec = (n: string) => body.sections.get(n);
+const year = d.date.getUTCFullYear();
+const monthLabel = `${monthName(d.date)} ${year}`;
+const nextMonth = new Date(Date.UTC(year, d.date.getUTCMonth() + 1, 1));
+const prevMonth = new Date(Date.UTC(year, d.date.getUTCMonth() - 1, 1));
+const prevPost = all.find((p) => isoMonth(p.data.date) === isoMonth(prevMonth));
+const nextPost = all.find((p) => isoMonth(p.data.date) === isoMonth(nextMonth));
+const trio = (sec('Cover trio')?.list ?? []).map((r) => cells(r, 2));
+const stats = (sec('Stats')?.list ?? []).map((r) => cells(r, 2));
+const hi = sec('Highlight');
+const hiDate = hi?.fields.date;
+const rows = (name: string) => (sec(name)?.list ?? []).map((r) => cells(r, 3));
+const films = rows('Films');
+const series = rows('Series');
+const books = rows('Books');
+const out = (sec('Out of the house')?.list ?? []).map((r) => cells(r, 7));
+const reflection = sec('A short reflection');
+const isRating = (v: string) => /^[1-5]$/.test(v);
+---
+<Base title={monthLabel} description={body.lede} originalLang={d.lang}>
+<div class="wrap original-language-note" data-original-note hidden></div>
+
+<section class="pagehead">
+  <div class="wrap grid diary-head">
+    <div class="span7 col diary-intro">
+      <nav class="breadcrumb" aria-label="Breadcrumb"><ol><li><a href="/life/">Life</a></li><li aria-current="page">Culture diary</li></ol></nav>
+      <p class="small"><OriginChip lang={d.lang} />{d.sample && <> <span class="mock">sample entry, titles are placeholders</span></>}</p>
+      <h1 class="display diary-title">{monthName(d.date)} <span class="ital muted">{year}</span></h1>
+      <p class="lede diary-lede">{body.lede}</p>
+    </div>
+    {trio.length > 0 && (
+    <div class="span5 diary-trio" aria-hidden="true">
+      {trio.map(([cls, cap]) => <div class={`ph ${cls}`}><span class="cap">{cap}</span></div>)}
+    </div>
+    )}
+  </div>
+</section>
+
+{stats.length > 0 && (
+<section class="section tight diary-stats">
+  <div class="wrap">
+    <ul class={`stat-strip n${stats.length}`}>
+      {stats.map(([fig, label]) => <li><span class="fig">{fig}</span><span class="tiny">{label}</span></li>)}
+    </ul>
+  </div>
+</section>
+)}
+
+{hi && (
+<section class="section">
+  <div class="wrap grid diary-highlight">
+    <div class="span5"><div class="ph r43 plum"><span class="cap">{hi.fields.still}</span></div></div>
+    <div class="span6 off1 col">
+      <p class="cat">Highlight of the month</p>
+      <h2 class="h2">{hi.fields.title}</h2>
+      <div class="row">{hi.fields.rating && <Stars value={Number(hi.fields.rating)} />}<span class="small">Watched {hiDate && <time datetime={hiDate} set:html={longDate(hiDate)} />}{hi.fields.where && `, ${hi.fields.where}`}</span></div>
+      <p class="prose diary-prose">{hi.before[0]}</p>
+    </div>
+  </div>
+</section>
+)}
+
+<section class="section diary-rule">
+  <div class="wrap grid">
+    <div class="span6 col diary-col">
+      <h2 class="h3">Films</h2>
+      <ul class="list">
+        {films.map(([title, r, text]) => <li><span class="col list-main"><span class="h4">{title}</span><span class="small" set:html={inline(text)} /></span>{isRating(r) ? <Stars value={Number(r)} /> : <span class="tag">{r}</span>}</li>)}
+      </ul>
+    </div>
+    <div class="span6 col diary-col">
+      <h2 class="h3">Series</h2>
+      <ul class="list">
+        {series.map(([title, r, text]) => <li><span class="col list-main"><span class="h4">{title}</span><span class="small" set:html={inline(text)} /></span>{isRating(r) ? <Stars value={Number(r)} /> : <span class="tag">{r}</span>}</li>)}
+      </ul>
+      <h2 class="h3 diary-subhead">Books</h2>
+      <ul class="list">
+        {books.map(([title, r, text]) => <li><span class="col list-main"><span class="h4">{title}</span><span class="small" set:html={inline(text)} /></span>{isRating(r) ? <Stars value={Number(r)} /> : <span class="tag">{r}</span>}</li>)}
+      </ul>
+    </div>
+  </div>
+</section>
+
+{out.length > 0 && (
+<section class="section diary-rule">
+  <div class="wrap">
+    <div class="sechead"><h2 class="h2">Out of the house</h2></div>
+    <div class="g3 diary-cards">
+      {out.map(([cls, cap, kind, iso, title, rating, text]) => (
+      <article class="card">
+        <div class={`ph ${cls}`}><span class="cap">{cap}</span></div>
+        <p class="cat">{kind}, <time datetime={iso} set:html={longDate(iso)} /> <OriginChip lang={d.lang} /></p>
+        <h3 class="h4">{title}</h3>
+        {isRating(rating) && <div class="row"><Stars value={Number(rating)} /></div>}
+        <p class="small">{text}</p>
+      </article>
+      ))}
+    </div>
+  </div>
+</section>
+)}
+
+<section class="section diary-rule">
+  <div class="wrap grid">
+    {reflection && (<>
+    <div class="span3"><h2 class="h3">A short reflection</h2></div>
+    <div class="span6 prose">{reflection.before.map((p) => <p>{p}</p>)}</div>
+    </>)}
+    <nav class="span3 col diary-prevnext" aria-label="Months">
+      {prevPost
+        ? <a class="link" href={`/life/culture/${isoMonth(prevPost.data.date)}/`}>{monthName(prevMonth)} {prevMonth.getUTCFullYear()}</a>
+        : <span class="link unavailable" data-no-label>{monthName(prevMonth)} {prevMonth.getUTCFullYear()}</span>}
+      {nextPost
+        ? <a class="link" href={`/life/culture/${isoMonth(nextPost.data.date)}/`}>{monthName(nextMonth)} {nextMonth.getUTCFullYear()}</a>
+        : <span class="tiny">Next month: {monthName(nextMonth)} {nextMonth.getUTCFullYear()}, not written yet</span>}
+    </nav>
+  </div>
+</section>
+</Base>

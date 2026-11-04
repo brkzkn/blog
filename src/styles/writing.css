@@ -1,0 +1,5 @@
+/* 2026-11-04: plain Markdown headings inside a post body match the prototype's `h2.h3` article headings,
+   so writing "## Heading" in a post needs no HTML. Mirrors .h3 and `.article-body h2.h3` in site.css. */
+.article-body h2:not(.h3){font-family:var(--serif);font-size:30px;line-height:1.15;font-weight:400;margin-top:1.8em;margin-bottom:.5em}
+.article-body h2:not(.h3):first-child{margin-top:0}
+@media(max-width:640px){.article-body h2:not(.h3){font-size:24px}}

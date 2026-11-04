@@ -1,0 +1,12 @@
+---
+import Art from './Art.astro';
+const { entry: e } = Astro.props;
+const live = !!e.verified;
+const Tag = live ? 'a' : 'div';
+const attrs = live ? { href: e.url, target: '_blank', rel: 'noopener noreferrer' } : {};
+---
+<p class="fe-kicker">My note</p><p class="fe-comment" lang={e.language}>{e.comment}</p>
+<Tag class="fe-source" {...attrs}><span class="fe-source-img"><Art name="chip" /></span><span class="fe-source-text"><span class="fe-kicker">From the source</span>
+<span class="fe-source-title">{e.linkTitle}</span><span class="fe-source-desc" lang="en">{e.description}</span>
+<span class="fe-source-domain tiny"><span>{e.domain}</span> · <span>{live ? 'Opens in a new tab' : 'Fictional link, not clickable'}</span>{live && <> <span aria-hidden="true">↗</span></>}</span></span></Tag>
+<p class="fe-meta tiny">Preview image is a placeholder drawn in code.</p>

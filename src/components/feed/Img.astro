@@ -1,0 +1,6 @@
+---
+// Plain <img> as drawn by feed-render.js: explicit width/height, lazy, async.
+import { fixSrc } from '../../lib/feed';
+const { p, class: cls } = Astro.props;
+---
+<img class={cls} src={fixSrc(p.src)} alt={p.alt} width={p.w} height={p.h} loading="lazy" decoding="async">

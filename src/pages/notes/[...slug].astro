@@ -1,0 +1,113 @@
+---
+// Post detail (prototype: note.html). Every post is served at /notes/<slug>/ whatever its type (ADR-002).
+// Prev/next stay within the same type: no links across content types, omitted when there is none.
+import { md } from '../../lib/md';
+import Base from '../../layouts/Base.astro';
+import OriginChip from '../../components/life/OriginChip.astro';
+import { getPosts, postSlug, postUrl, type Post } from '../../lib/posts';
+import { bodyParts, postHeading, plainText, feedTypeLabels, fixHref, langNames } from '../../lib/feed';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return posts.map((post) => {
+    const same = posts.filter((p) => p.data.type === post.data.type); // newest first
+    const at = same.indexOf(post);
+    return { params: { slug: postSlug(post) }, props: { post, newer: same[at - 1], older: same[at + 1] } };
+  });
+}
+interface Props { post: Post; newer?: Post; older?: Post }
+const { post, newer, older } = Astro.props;
+const d = post.data;
+// Notes show everything after the lede as prose. Other types only show the lede here: their structured bodies
+// (facts, day by day, dishes) are drawn by their own pages, reached through the button below.
+const rest = post.data.type === 'note' ? (post.body ?? '').replace(/<!--[\s\S]*?-->/g, '').trim().replace(/^[\s\S]*?(\n\s*\n|$)/, '').trim() : '';
+// md() escapes HTML; the one inline element sample posts use (the .mock chip) is let through.
+const restHtml = md(rest).replace(/&lt;span class="mock"&gt;(.*?)&lt;\/span&gt;/g, '<span class="mock">$1</span>');
+
+const WD = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const MO = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const day = `${d.date.getUTCDate()} ${MO[d.date.getUTCMonth()]} ${d.date.getUTCFullYear()}`;
+const hasTime = d.date.getUTCHours() + d.date.getUTCMinutes() > 0;
+const hh = String(d.date.getUTCHours()).padStart(2, '0'), mm = String(d.date.getUTCMinutes()).padStart(2, '0');
+const when = `${WD[d.date.getUTCDay()]} ${day}${hasTime ? `, ${hh}:${mm}` : ''}`;
+const iso = d.date.toISOString().slice(0, hasTime ? 16 : 10);
+
+const isNote = d.type === 'note';
+const heading = postHeading(post);
+const pageTitle = d.title ?? `${heading}, ${day}`;
+const lead = plainText(bodyParts(post.body).paragraphs[0] ?? '');
+const label = isNote ? 'Note' : feedTypeLabels[d.type];
+const tones = ['warm', 'blue', 'sand'];
+const captions = d.photos.length ? d.photos.map((_, i) => d.alt[i] ?? '') : d.alt; // no photos yet: hatched placeholders captioned by alt
+const detailLink = d.link && d.link.startsWith('/') ? d.link : d.type === 'restaurant' ? `/life/restaurants/${postSlug(post)}/` : d.type === 'trip' ? `/life/trips/${postSlug(post)}/` : d.type === 'writing' ? `/writing/${postSlug(post)}/` : undefined;
+const pager = [newer && { label: 'Newer:', p: newer }, older && { label: 'Older:', p: older }].filter(Boolean) as { label: string; p: Post }[];
+const place = d.place?.name;
+---
+<Base title={pageTitle} description={lead} originalLang={d.lang} nav="life">
+<div class="wrap original-language-note" data-original-note hidden></div><div class="wrap detail-back"><a class="link" href="/life/">← Back to Life</a></div>
+
+<section class="note-detail">
+  <div class="wrap note-layout">
+
+    <article>
+      {d.title ? <h1 class="h2" lang={d.lang}>{d.title}</h1> : <h1 class="sr-only">Note, {day}</h1>}
+      <div class="note-meta meta">
+        <span class="tag fill">{label}</span>
+        <time class="tiny" datetime={iso}>{when}</time>
+        <OriginChip lang={d.lang} />
+      </div>
+
+      <p class="note-lead" lang={d.lang}>{lead}</p>
+
+      {d.photos.length > 0 && (
+        <div class="photo-grid">
+          {d.photos.map((im, i) => <img class="wide" src={im.src} alt={d.alt[i] ?? ''} width={im.width} height={im.height} loading="lazy" decoding="async">)}
+        </div>
+      )}
+      {d.photos.length === 0 && captions.length > 0 && (
+        <div class="photo-grid">
+          {captions.map((c, i) => <div class={i === 0 ? 'ph warm wide tall' : `ph ${tones[i % 3] === 'warm' ? 'blue' : tones[i % 3]} wide`}><span class="cap">{c}</span></div>)}
+        </div>
+      )}
+
+      {restHtml && <div class="prose note-body" set:html={restHtml} />}
+
+      {place && (
+        <div class="panel note-place">
+          <div class="ph r32 blue"><span class="cap">Map</span></div>
+          <div>
+            <h2 class="note-place-name">{place}</h2>
+            {d.place?.area && <p class="tiny">{d.place.area}</p>}
+          </div>
+        </div>
+      )}
+
+      {detailLink && <p><a class="btn sm" href={fixHref(detailLink)}>{label} details <span aria-hidden="true">→</span></a></p>}
+
+      <div class="note-actions">
+        {d.tags.length > 0 && <p class="tiny note-topics">{d.tags.join(' · ')}</p>}
+        <div class="row">
+          <button type="button" class="copy-link link" id="copy-link">Copy link</button>
+          <span class="tiny copy-status" id="copy-status" role="status" aria-live="polite"></span>
+          <a class="link" href={`mailto:hello@burakozkan.net?subject=${encodeURIComponent('Re: ' + pageTitle)}`}>Reply by email</a>
+        </div>
+      </div>
+
+      {pager.length > 0 && (
+        <nav class="pager" aria-label="Adjacent posts">
+          {pager.map((x) => <a class="link" href={postUrl(x.p)} rel={x.label === 'Newer:' ? 'next' : 'prev'}><span>{x.label}</span> {postHeading(x.p)}</a>)}
+        </nav>
+      )}
+    </article>
+
+    <aside aria-label="About this note">
+      <dl class="kv stacked">
+        {d.place?.area && <><dt>Posted from</dt><dd>{d.place.area}</dd></>}
+        <dt>Original language</dt><dd>{langNames[d.lang]}</dd>
+      </dl>
+    </aside>
+  </div>
+</section>
+
+<script is:inline>(function(){var b=document.getElementById('copy-link'),s=document.getElementById('copy-status');if(!b)return;b.addEventListener('click',function(e){e.stopImmediatePropagation();var tr=document.documentElement.lang==='tr';var ok=function(){s.textContent=tr?'Bağlantı kopyalandı':'Link copied'};var no=function(){s.textContent=tr?'Kopyalanamadı':'Copy failed'};try{navigator.clipboard.writeText(location.href).then(ok,no)}catch(x){no()}setTimeout(function(){s.textContent=''},3000)})})();</script>
+</Base>

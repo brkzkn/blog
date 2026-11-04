@@ -1,0 +1,2 @@
+/* Work pages (2026-11-04): the lead card shows three tiles when the case study has no lesson tile. */
+@media(min-width:1001px){.wk-tiles[data-count="3"]{grid-template-columns:repeat(3,minmax(0,1fr))}}

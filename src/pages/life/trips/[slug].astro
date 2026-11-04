@@ -1,0 +1,118 @@
+---
+// Trip detail (prototype/london-guide.html). Content: posts with type: trip. Body conventions: src/lib/life-body.ts.
+import { Image } from 'astro:assets';
+import Base from '../../../layouts/Base.astro';
+import OriginChip from '../../../components/life/OriginChip.astro';
+import { getPosts, postSlug } from '../../../lib/posts';
+import { parseBody, cells, inline, plain, weekdayDate } from '../../../lib/life-body';
+
+export async function getStaticPaths() {
+  const posts = (await getPosts()).filter((p) => p.data.type === 'trip');
+  return posts.map((post) => ({ params: { slug: postSlug(post) }, props: { post } }));
+}
+const { post } = Astro.props;
+const d = post.data;
+const body = parseBody(post.body ?? '');
+const sec = (name: string) => body.sections.get(name);
+const heroRaw = sec('Hero photo')?.list[0];
+const [heroClass, heroCap] = heroRaw ? cells(heroRaw, 2) : ['deep', ''];
+const heroLabel = heroCap.replace(/^Hero photo: /, '');
+const nights = d.days ? d.days - 1 : undefined;
+const facts = (sec('Facts')?.list ?? []).map((r) => cells(r, 2));
+const dayBlock = sec('Day by day');
+const photos = sec('Photographs');
+const changes = sec('What I would change next time');
+const related = sec('Related')?.list ?? [];
+---
+<Base title={d.title ?? d.destination ?? 'Trip'} description={body.lede} originalLang={d.lang}>
+<div class="wrap original-language-note" data-original-note hidden></div><div class="wrap detail-back"><a class="link" href="/life/">← Back to Life</a></div>
+<section class="detail-hero wrap">
+  <div class="col detail-hero-text">
+    <nav class="breadcrumb" aria-label="Breadcrumb"><ol><li><a href="/life/">Life</a></li><li aria-current="page">Travel</li></ol></nav>
+    <p class="small"><OriginChip lang={d.lang} />{d.sample && <> <span class="mock">sample entry</span></>}</p>
+    <h1 class="h1">{d.title}</h1>
+    <p class="lede">{body.lede}</p>
+    <dl class="kv stacked">
+      <dt>Destination</dt><dd>{[d.destination, d.country].filter(Boolean).join(', ')}</dd>
+      {d.dates && <><dt>Dates</dt><dd>{d.dates}</dd></>}
+      {d.days && <><dt>Duration</dt><dd>{d.days} days, {nights} nights</dd></>}
+      {facts.map(([k, v]) => <><dt>{k}</dt><dd>{v}</dd></>)}
+    </dl>
+  </div>
+  {d.cover
+    ? <div class="detail-hero-media ph photo-placeholder"><Image src={d.cover} alt={d.alt[0] ?? ''} loading="eager" /></div>
+    : <div class={`detail-hero-media ph ${heroClass}`} role="img" aria-label={`${heroLabel} (placeholder)`}><span class="cap">{heroCap}</span></div>}
+</section>
+
+{dayBlock && dayBlock.subs.length > 0 && (
+<section class="section" aria-labelledby="h-days">
+  <div class="wrap">
+    <div class="sechead"><h2 class="h2" id="h-days">Day by day</h2>{dayBlock.before[0] && <p class="small">{dayBlock.before[0]}</p>}</div>
+    <div class="g3">
+      {dayBlock.subs.map((day, i) => {
+        const [iso, title] = cells(day.title, 2);
+        return (
+      <article class="panel col day-card" aria-labelledby={`day${i + 1}`}>
+        <div class="col day-card-head"><p class="cat"><time datetime={iso}>{weekdayDate(iso)}</time></p><h3 class="h3" id={`day${i + 1}`}>{title}</h3></div>
+        <ol class="log">
+          {day.list.map((row) => { const [t, text] = cells(row, 2); return <li class="log-item"><time datetime={t}>{t}</time><div>{text}</div></li>; })}
+        </ol>
+        {day.fields.places && <ul class="row tag-row" aria-label="Places">{day.fields.places.split(',').map((p) => <li class="tag">{p.trim()}</li>)}</ul>}
+      </article>
+        );
+      })}
+    </div>
+  </div>
+</section>
+)}
+
+{(photos || d.photos.length > 0) && (
+<section class="section top-rule" aria-labelledby="h-photos">
+  <div class="wrap">
+    <div class="sechead"><h2 class="h2" id="h-photos">Photographs</h2>{photos?.before[0] && <p class="small">{photos.before[0]}</p>}</div>
+    <div class="photo-grid">
+      {d.photos.length > 0
+        ? d.photos.map((src, i) => <div class="ph photo-placeholder" ><Image src={src} alt={d.alt[i] ?? ''} loading="lazy" /></div>)
+        : photos!.list.map((row) => {
+            const [cls, cap, extra] = cells(row, 3);
+            const img = cls.match(/^image (\S+) ?(.*)$/);
+            const [hue, ...rest] = (img?.[2] ?? '').split(' ').filter(Boolean);
+            return img
+              ? <div class={['ph', hue, 'photo-placeholder', ...rest].join(' ')}><span class="cap">{cap}</span><img src={`/assets/images/${img[1]}`} alt={extra ?? `Illustration: ${cap}`} loading="lazy" /></div>
+              : <div class={`ph ${cls}`} role="img" aria-label={`${extra ?? cap} (placeholder)`}><span class="cap">{cap}</span></div>;
+          })}
+    </div>
+  </div>
+</section>
+)}
+
+<section class="section top-rule">
+  <div class="wrap g3 closing-grid">
+    {sec('Practical notes') && (
+    <div class="col">
+      <h2 class="h3">Practical notes</h2>
+      <ul class="bullets">{sec('Practical notes')!.list.map((r) => <li>{r}</li>)}</ul>
+    </div>
+    )}
+    {sec('Favourite moments') && (
+    <div class="col">
+      <h2 class="h3">Favourite moments</h2>
+      <div class="prose">{sec('Favourite moments')!.before.map((p) => <p>{p}</p>)}</div>
+    </div>
+    )}
+    {changes && (
+    <div class="panel warm col">
+      <h2 class="h3">What I would change next time</h2>
+      <ul class="bullets">{changes.list.map((r) => <li>{r}</li>)}</ul>
+    </div>
+    )}
+  </div>
+</section>
+
+<section class="section tight top-rule">
+  <div class="wrap detail-footer">
+    <a class="link" href="/life/">Back to the journal</a>
+    {related.length > 0 && <div class="row tag-row"><span class="small">Related:</span>{related.map((r) => /^\[.+\]\(\/.*\)$/.test(r) ? <Fragment set:html={inline(r)} /> : <span class="tag unavailable">{plain(r)}</span>)}</div>}
+  </div>
+</section>
+</Base>

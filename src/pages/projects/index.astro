@@ -1,0 +1,124 @@
+---
+import Base from '../../layouts/Base.astro';
+---
+<Base title="Projects" description="A house that runs on Home Assistant, a workshop corner with two printers, and the experiments in between. Each project keeps a log, because the log is where the lessons are." originalLang="en">
+<div class="wrap original-language-note" data-original-note hidden></div>
+<section class="pagehead">
+  <div class="wrap grid pagehead-split">
+    <div class="span7 col stack-24">
+      <h1 class="h1">Things I build when nobody is paying me to.</h1>
+      <p class="lede lede-600">A house that runs on Home Assistant, a workshop corner with two printers, and the experiments in between. Each project keeps a log, because the log is where the lessons are.</p>
+    </div>
+    <div class="span5">
+      <div class="ph r32 warm photo-placeholder"><span class="cap">Photo: workshop corner, printer cabinet, wall of tools</span><img src="/assets/images/stock-3d-printer.jpg" alt="Illustrative photo: workshop corner, printer cabinet, wall of tools" loading="lazy"></div>
+    </div>
+  </div>
+</section>
+
+<section class="section tight jump-bar">
+  <div class="wrap jump-bar-inner">
+    <nav aria-label="Jump to section"><div class="filters">
+      <a href="#smart">Smart home</a>
+      <a href="#print">3D printing</a>
+      <a href="#exp">Experiments</a>
+      <a href="#gear">Gear</a>
+    </div></nav>
+    <a class="link" href="/gear/">See all gear</a>
+  </div>
+</section>
+
+<section class="section" id="smart">
+  <div class="wrap">
+    <div class="sechead">
+      <div class="col stack-8"><h2 class="h2">Smart home</h2><p class="small">Home Assistant, sensors, presence, and a network that keeps things apart.</p></div>
+      <span class="small">4 projects</span>
+    </div>
+    <div class="grid grid-stretch">
+      <a href="/projects/smart-home/" class="span7 card">
+        <div class="ph r169 blue photo-placeholder"><span class="cap">Photo: Home Assistant dashboard on wall tablet, kitchen</span><img src="/assets/images/stock-smart-home.jpg" alt="Illustrative photo: home assistant dashboard on wall tablet, kitchen" loading="lazy"></div>
+        <div class="row meta-row"><p class="cat">Home Assistant</p><span class="tag warm">Ongoing</span><span class="origin-chip" title="Written in English">EN</span></div>
+        <h3 class="h3">A house that quietly does the right thing</h3>
+        <p class="small lede-560">Started in 2022 with three Zigbee bulbs. Now runs lighting, climate, the robot vacuum and a morning routine for twins. The design principle: no automation should surprise a guest.</p>
+      </a>
+      <div class="span5 col stack-24">
+        <a href="/projects/smart-home/" class="card row">
+          <div class="ph r11 sage" aria-hidden="true"><span class="cap">Photo</span></div>
+          <div class="col stack-6"><div class="row meta-row"><p class="cat">Home networking</p><span class="tag">Done</span><span class="origin-chip" title="Written in English">EN</span></div><h3 class="h4">VLANs for a flat, not a data centre</h3><p class="small">Three networks, one for things that should never talk to the NAS.</p></div>
+        </a>
+        <a href="/projects/smart-home/" class="card row">
+          <div class="ph r11 blue" aria-hidden="true"><span class="cap">Photo</span></div>
+          <div class="col stack-6"><div class="row meta-row"><p class="cat">Sensors</p><span class="tag warm">Ongoing</span><span class="origin-chip" title="Written in English">EN</span></div><h3 class="h4">Presence without cameras</h3><p class="small">mmWave in the living room, door sensors elsewhere, and rules about what “home” means.</p></div>
+        </a>
+        <a href="/projects/smart-home/" class="card row">
+          <div class="ph r11 sand" aria-hidden="true"><span class="cap">Photo</span></div>
+          <div class="col stack-6"><div class="row meta-row"><p class="cat">Device setup</p><span class="tag">Done</span><span class="origin-chip" title="Written in English">EN</span></div><h3 class="h4">Backups that restore, tested quarterly</h3><p class="small">Home Assistant snapshots to the NAS, the NAS to cold storage, and a calendar reminder to prove it.</p></div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-ruled" id="print">
+  <div class="wrap">
+    <div class="sechead">
+      <div class="col stack-8"><h2 class="h2">3D printing</h2><p class="small">Functional parts first. Ornaments only when the twins ask.</p></div>
+      <span class="small">3 projects</span>
+    </div>
+    <div class="g3">
+      <a class="card unavailable">
+        <div class="ph r43 warm"><span class="cap">Photo: plywood cabinet, printer visible through acrylic door</span></div>
+        <div class="row meta-row"><p class="cat">Woodwork and printing</p><span class="tag">Built</span><span class="origin-chip" title="Written in English">EN</span></div>
+        <h3 class="h4">A cabinet for two printers and the mess they make</h3>
+        <p class="small">Designed in CAD, cut from 18 mm birch ply, with an enclosed and filtered bay for the 3D printer, a shelf for the inkjet, and a spool drawer.</p>
+      </a>
+      <a class="card unavailable">
+        <div class="ph r43 sand"><span class="cap">Photo: grid of printed brackets and clips</span></div>
+        <div class="row meta-row"><p class="cat">Functional objects</p><span class="tag warm">Ongoing</span><span class="origin-chip" title="Written in English">EN</span></div>
+        <h3 class="h4">Small fixes, printed: the household parts library</h3>
+        <p class="small">Cable clips, a sensor mount that matches the skirting, replacement knobs for a 1990s oven. Every file versioned, every failure logged.</p>
+      </a>
+      <a class="card unavailable">
+        <div class="ph r43 deep"><span class="cap">Photo: printer mid-print, nozzle close-up</span></div>
+        <div class="row meta-row"><p class="cat">Printer setup</p><span class="tag">Done</span><span class="origin-chip" title="Written in English">EN</span></div>
+        <h3 class="h4">Tuning a budget printer until it stops being budget</h3>
+        <p class="small">Firmware, input shaping, a hardened nozzle, and the calibration sequence I now run after every filament change.</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="section section-ruled" id="exp">
+  <div class="wrap grid">
+    <div class="span4 col stack-12">
+      <h2 class="h2">Experiments</h2>
+      <p class="small">Weekend-sized questions. Most end in a blog post; some end in a drawer.</p>
+    </div>
+    <div class="span8">
+      <ul class="list">
+        <li><span class="col stack-4 grow"><span class="h4 unavailable">Running local LLM evals on a home server</span><span class="small">Can a small model classify my photo library by event? Mostly, and the failures were instructive.</span></span><span class="row meta-row"><span class="tag">Written up</span><span class="origin-chip" title="Written in English">EN</span></span></li>
+        <li><span class="col stack-4 grow"><span class="h4 unavailable">A three-node Kubernetes cluster on mini PCs</span><span class="small">For learning operations the hard way: power cuts, SD cards, and the day etcd filled a disk.</span></span><span class="row meta-row"><span class="tag warm">Ongoing</span><span class="origin-chip" title="Written in English">EN</span></span></li>
+        <li><span class="col stack-4 grow"><span class="h4 unavailable">Reading a smart meter over infrared</span><span class="small">A sensor, a schematic I did not fully understand, and a working energy graph two weekends later.</span></span><span class="row meta-row"><span class="tag">Done</span><span class="origin-chip" title="Written in English">EN</span></span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section section-ruled" id="gear">
+  <div class="wrap">
+    <div class="sechead">
+      <div class="col stack-8"><h2 class="h2">My gear</h2><p class="small">What the projects above are built with. No affiliate links, just the list I wish I had found earlier. <span class="mock">models are placeholders</span></p></div>
+      <a class="link" href="/gear/">See all gear</a>
+    </div>
+    <div class="g4 gear-blocks">
+      <div class="gear-block"><h3 class="h4">Home server</h3>
+        <dl class="kv stacked"><dd>[Mini PC model], 32 GB RAM</dd><dd>[NAS model], 4 bays, RAID 1 pairs</dd><dd>Proxmox, Home Assistant OS as a VM</dd></dl></div>
+      <div class="gear-block"><h3 class="h4">Network</h3>
+        <dl class="kv stacked"><dd>[Router model] with VLAN support</dd><dd>2 access points, wired backhaul</dd><dd>Managed 8-port switch</dd></dl></div>
+      <div class="gear-block"><h3 class="h4">Sensors and radios</h3>
+        <dl class="kv stacked"><dd>Zigbee coordinator (USB)</dd><dd>mmWave presence sensor, living room</dd><dd>Door, temperature and humidity sensors</dd></dl></div>
+      <div class="gear-block"><h3 class="h4">Workshop</h3>
+        <dl class="kv stacked"><dd>[3D printer model], enclosed</dd><dd>[Inkjet printer model]</dd><dd>Track saw, router, pocket-hole jig</dd></dl></div>
+    </div>
+  </div>
+</section>
+</Base>

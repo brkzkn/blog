@@ -1,0 +1,7 @@
+---
+import Art from './Art.astro';
+const { entry: e } = Astro.props;
+---
+<div class="fe-milestone"><div class="fe-milestone-text"><p class="fe-milestone-date"><time datetime={e.publishedAt}>{e.dateLabel}</time></p>
+<h2 class="h3" lang={e.language}>{e.title}</h2><p class="fe-milestone-body" lang={e.language}>{e.body}</p></div>
+<figure class="fe-milestone-art"><Art name="twins" /><figcaption class="tiny">{e.illustration}</figcaption></figure></div>

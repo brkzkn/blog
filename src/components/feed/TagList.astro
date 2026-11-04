@@ -1,0 +1,4 @@
+---
+const { tags = [] } = Astro.props;
+---
+{tags.length > 0 && <ul class="fe-tags">{tags.slice(0, 3).map((t: string) => <li class="tag">{t}</li>)}</ul>}

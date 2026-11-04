@@ -1,0 +1,109 @@
+---
+import Base from '../../layouts/Base.astro';
+---
+<Base title="A house that quietly does the right thing" description="Home Assistant at the centre, Zigbee and a few Wi‑Fi devices around it, and a rule I keep coming back to: an automation that a guest has to be warned about is a bug." originalLang="en">
+<div class="wrap original-language-note" data-original-note hidden></div>
+<section class="pagehead sh-pagehead">
+  <div class="wrap col sh-gap24">
+    <nav class="breadcrumb" aria-label="Breadcrumb"><ol><li><a href="/projects/">Projects</a></li><li aria-current="page">Smart home</li></ol></nav>
+    <h1 class="h1 sh-title">A house that quietly does the right thing</h1>
+    <div class="grid sh-headgrid">
+      <p class="lede span7">Home Assistant at the centre, Zigbee and a few Wi‑Fi devices around it, and a rule I keep coming back to: an automation that a guest has to be warned about is a bug.</p>
+      <div class="span5 sh-tags">
+        <span class="tag warm">Status: ongoing</span><span class="tag">Started 2022</span><span class="tag">Home Assistant</span><span class="tag">Zigbee</span><span class="tag">VLANs</span><span class="origin-chip" title="Written in English">EN</span><span class="mock">mock content</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="ph r21 blue photo-placeholder sh-hero"><span class="cap">Hero photo: wall-mounted tablet in the hallway showing the home dashboard; evening light</span><img src="/assets/images/stock-smart-home.jpg" alt="Illustrative hero image: wall-mounted tablet in the hallway showing the home dashboard; evening light"></div>
+</div>
+
+<section class="section">
+  <div class="wrap grid">
+    <div class="span7 prose">
+      <h2 class="h2 sh-first">Why</h2>
+      <p>The first motivation was small: the hallway light switch is in the wrong place and always was. The second was the twins. Night feeds at 3 a.m. are easier when the kitchen lights come on at 10% instead of 100%, and when the heating knows that somebody is awake.</p>
+      <p>The deeper reason is the same one that makes me enjoy architecture work. A home is a distributed system with unreliable nodes and a very demanding user base. Getting it to feel calm is a design problem.</p>
+      <h2 class="h2">Principles</h2>
+      <p>Local first: nothing essential depends on a cloud account. Physical switches keep working if the server is off. Every automation has a name a non-engineer would understand, and a single place to turn it off.</p>
+    </div>
+    <div class="span5 col sh-gap24">
+      <div class="panel col sh-gap14">
+        <h2 class="h4">Components and tools</h2>
+        <dl class="kv stacked">
+          <dt>Hub</dt><dd>Home Assistant OS on Proxmox, [mini PC model]</dd>
+          <dt>Radios</dt><dd>Zigbee coordinator over USB; Thread border router under evaluation</dd>
+          <dt>Lighting</dt><dd>Zigbee bulbs and in-wall relays behind the existing switches</dd>
+          <dt>Climate</dt><dd>Smart TRVs on radiators, one temperature sensor per room</dd>
+          <dt>Presence</dt><dd>mmWave sensor in the living room, door sensors, phone presence as a fallback</dd>
+          <dt>Network</dt><dd>Three VLANs: trusted, IoT, guest; mDNS reflector between the first two</dd>
+          <dt>Backups</dt><dd>Nightly snapshots to the NAS, monthly restore test</dd>
+        </dl>
+      </div>
+      <div class="g2 sh-gap14">
+        <div class="ph r43 sage photo-placeholder"><span class="cap">Photo: sensor on skirting board, printed mount</span><img src="/assets/images/stock-smart-home.jpg" alt="Illustrative image: sensor on skirting board, printed mount"></div>
+        <div class="ph r43 sand"><span class="cap">Photo: network rack in the hallway cupboard</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section tight sh-ruled">
+  <div class="wrap">
+    <div class="sechead sh-sechead"><h2 class="h2">How the pieces talk</h2><p class="small">Dashed boxes are things I do not control.</p></div>
+    <div class="panel sh-diagram" role="img" aria-label="Sensors, light switches and relays, and smart radiator valves feed Home Assistant, which works with an MQTT broker. Home Assistant feeds the wall tablet, phones and the NAS. The robot vacuum, weather and calendar feeds are external.">
+      <div class="col sh-gap12">
+        <div class="box">Light switches and relays</div>
+        <div class="box">Sensors: door, climate, mmWave</div>
+        <div class="box">Smart TRVs</div>
+        <div class="box ext">Robot vacuum (IoT VLAN)</div>
+      </div>
+      <div class="conn"></div>
+      <div class="col sh-gap12">
+        <div class="box core sh-core"><b>Home Assistant</b>Automations, scenes, dashboards. Local only.</div>
+        <div class="box">MQTT broker</div>
+      </div>
+      <div class="conn"></div>
+      <div class="col sh-gap12">
+        <div class="box">Wall tablet dashboard</div>
+        <div class="box">Phones (companion app)</div>
+        <div class="box">NAS: snapshots, media</div>
+        <div class="box ext">Weather and calendar feeds</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section sh-ruled">
+  <div class="wrap grid">
+    <div class="span4 col sh-gap12"><h2 class="h2">Project log</h2><p class="small">Most recent first. The log is the project.</p></div>
+    <div class="span8">
+      <ol class="log"><li class="log-item"><time datetime="2026-10">Oct 2026<span class="tiny sh-entry">Entry 23</span></time><div class="col sh-gap8"><h3 class="h4">Thread border router trial</h3><p>Added a border router to test Matter-over-Thread devices. Pairing is better than Zigbee; range in a concrete building is not. Keeping both for now.</p></div></li><li class="log-item"><time datetime="2026-07">Jul 2026<span class="tiny sh-entry">Entry 22</span></time><div class="col sh-gap8"><h3 class="h4">Guest mode</h3><p>One switch that disables presence-based lighting and motion-triggered scenes for 48 hours. Should have built this before the first guest, not after the third.</p></div></li><li class="log-item"><time datetime="2026-03">Mar 2026<span class="tiny sh-entry">Entry 21</span></time><div class="col sh-gap8"><h3 class="h4">mmWave replaces PIR in the living room</h3><p>PIR kept turning lights off on people reading. mmWave sees a still person. Mounted on a printed bracket that hides the cable.</p></div></li><li class="log-item"><time datetime="2025-11">Nov 2025<span class="tiny sh-entry">Entry 20</span></time><div class="col sh-gap8"><h3 class="h4">VLAN migration, done in one evening and two more mornings</h3><p>Everything that only needs the internet moved to the IoT network. The vacuum lost its map once. Full notes in <a class="link" href="/writing/">the blog</a>.</p></div></li><li class="log-item"><time datetime="2025-08">Aug 2025<span class="tiny sh-entry">Entry 19</span></time><div class="col sh-gap8"><h3 class="h4">Night-feed lighting</h3><p>Between midnight and 6 a.m., any motion in the kitchen gives 10% warm light for 8 minutes. The single most appreciated automation in the house.</p></div></li><li class="log-item"><span class="sh-when">2022 to 2025<span class="tiny sh-entry">Entries 1 to 18</span></span><div class="col sh-gap8"><p>Three bulbs, then a hub, then the realisation that the Wi‑Fi plugs were phoning home. <span class="link unavailable">Show earlier entries</span></p></div></li></ol>
+    </div>
+  </div>
+</section>
+
+<section class="section sh-ruled">
+  <div class="wrap grid">
+    <div class="span6 col sh-gap20">
+      <h2 class="h3">Lessons learned</h2>
+      <ul class="list">
+        <li><span class="num">01</span><span class="small sh-ink">Keep the physical switches. The best automation is one nobody needs to know exists.</span></li>
+        <li><span class="num">02</span><span class="small sh-ink">Presence is a definition, not a sensor. Write down what “home” means before buying hardware.</span></li>
+        <li><span class="num">03</span><span class="small sh-ink">Segment the network early. Migrating later means re-pairing everything.</span></li>
+        <li><span class="num">04</span><span class="small sh-ink">Test the restore, not the backup.</span></li>
+      </ul>
+    </div>
+    <div class="span6 col sh-gap20">
+      <h2 class="h3">Related writing</h2>
+      <div class="col sh-gap14">
+        <span class="panel col unavailable sh-gap6"><p class="cat">Smart home</p><h3 class="h4">Presence detection without a camera in every room</h3><p class="tiny"><time datetime="2026-10-11">11 Oct 2026</time>, 9 min <span class="origin-chip" title="Written in English">EN</span></p></span>
+        <span class="panel col unavailable sh-gap6"><p class="cat">Smart home</p><h3 class="h4">VLANs for a flat: what I would do differently</h3><p class="tiny"><time datetime="2025-11-30">30 Nov 2025</time>, 11 min <span class="origin-chip" title="Written in English">EN</span></p></span>
+        <span class="panel col unavailable sh-gap6"><p class="cat">3D printing</p><h3 class="h4">Printing sensor mounts that match the skirting board</h3><p class="tiny"><time datetime="2026-04-14">14 Apr 2026</time>, 6 min <span class="origin-chip" title="Written in English">EN</span></p></span>
+      </div>
+    </div>
+  </div>
+</section>
+</Base>

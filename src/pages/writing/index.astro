@@ -1,0 +1,80 @@
+---
+// blog.html. Posts of type `writing` from the collection, plus sample cards (preview only) for entries that have no content yet.
+// Filters and search are handled by the shared script (data-filter / data-category / data-search), as in the prototype.
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import {
+  getWriting, writingMeta, filterOf, longDate, shortDate, isoDate, originTitle, postSlug,
+  isPreview, SAMPLE_WRITING,
+} from '../../lib/writing';
+
+const posts = await getWriting();
+const [featured, ...rest] = posts;
+const cards = [
+  ...rest.map((p) => ({ kind: 'post' as const, time: +p.data.date, post: p })),
+  ...(isPreview ? SAMPLE_WRITING.map((s) => ({ kind: 'sample' as const, time: +new Date(s.iso), sample: s })) : []),
+].sort((a, b) => b.time - a.time);
+const anySample = posts.some((p) => p.data.sample) || isPreview;
+const fm = featured && writingMeta(featured);
+---
+<Base title="Writing" description="Architecture, backend engineering, the house, the printer, and the occasional personal note.">
+
+<section class="pagehead writing-head">
+  <div class="wrap writing-head-row">
+    <div class="col">
+      <h1 class="h1">Writing</h1>
+      <p class="lede">Architecture, backend engineering, the house, the printer, and the occasional personal note. {anySample && <span class="mock">sample posts</span>}</p>
+    </div>
+    <label class="search writing-search"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="5.5" fill="none" stroke="currentColor" stroke-width="1.5"></circle><path d="M11 11l4 4" stroke="currentColor" stroke-width="1.5"></path></svg><input type="search" placeholder="Search writing…" aria-label="Search writing" data-search=""></label>
+  </div>
+</section>
+
+<section class="section tight writing-filterbar">
+  <div class="wrap filters"><button data-filter="all" type="button" aria-pressed="true">All</button><button data-filter="architecture" type="button" aria-pressed="false">Architecture</button><button data-filter="projects" type="button" aria-pressed="false">Projects</button><button data-filter="life" type="button" aria-pressed="false">Life</button></div>
+</section>
+
+{featured && fm && (
+<section class="section writing-featured-section">
+  <div class="wrap">
+    <a data-category={filterOf(featured)} href={`/writing/${postSlug(featured)}/`} class="grid writing-featured">
+      <div class="span7">
+        {featured.data.cover
+          ? <div class="ph r32 photo-placeholder"><Image src={featured.data.cover} alt={featured.data.alt[0] ?? ''} widths={[640, 960]} sizes="(min-width: 1000px) 700px, 100vw" /></div>
+          : <div class={`ph r32 ${fm.tone}`}><span class="cap">{fm.card}</span></div>}
+      </div>
+      <div class="span5 col">
+        <p class="cat">Featured, {fm.topic}</p>
+        <h2 class="h2">{featured.data.title}</h2>
+        <p class="body muted">{fm.lede}</p>
+        <p class="small writing-meta"><time datetime={isoDate(featured.data.date)}>{longDate(featured.data.date)}</time><span>{fm.minutes} min read</span><span class="origin-chip" title={originTitle(featured.data.lang)}>{featured.data.lang.toUpperCase()}</span></p>
+        <div class="tag-row">{featured.data.tags.slice(0, 3).map((t) => <span class="tag">{t}</span>)}</div>
+      </div>
+    </a>
+  </div>
+</section>
+)}
+
+<section class="section writing-list-section">
+  <div class="wrap">
+    <div class="g3 writing-cards">
+      {cards.map((c) => {
+        if (c.kind === 'sample') {
+          const s = c.sample;
+          return (
+            <span class="card unavailable" data-category={s.filter}><div class:list={['ph', 'r32', s.tone, { 'photo-placeholder': s.img }]}><span class="cap">{s.cap}</span>{s.img && <img src={s.img} alt={`Illustrative photo: ${s.cap.replace(/^Photo: /, '')}`} loading="lazy" />}</div><p class="cat">{s.cat}</p><h3 class="h4">{s.title}</h3><p class="small">{s.text}</p><p class="tiny writing-meta"><time datetime={s.iso}>{s.date}</time><span>{s.min} min read</span><span class="origin-chip" title="Written in English">EN</span></p></span>
+          );
+        }
+        const p = c.post; const m = writingMeta(p);
+        return (
+          <a class="card" data-category={filterOf(p)} href={`/writing/${postSlug(p)}/`}>
+            {p.data.cover
+              ? <div class="ph r32 photo-placeholder"><Image src={p.data.cover} alt={p.data.alt[0] ?? ''} widths={[400, 800]} sizes="(min-width: 1000px) 380px, 100vw" /></div>
+              : <div class={`ph r32 ${m.tone}`}><span class="cap">{m.card}</span></div>}
+            <p class="cat">{m.topic}</p><h3 class="h4">{p.data.title}</h3><p class="small">{m.lede}</p><p class="tiny writing-meta"><time datetime={isoDate(p.data.date)}>{shortDate(p.data.date)}</time><span>{m.minutes} min read</span><span class="origin-chip" title={originTitle(p.data.lang)}>{p.data.lang.toUpperCase()}</span></p>
+          </a>
+        );
+      })}
+    </div>
+  </div>
+</section>
+</Base>

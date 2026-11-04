@@ -1,0 +1,10 @@
+---
+import { fixHref } from '../../lib/feed';
+import Img from './Img.astro';
+import TagList from './TagList.astro';
+const { entry: e } = Astro.props;
+---
+<div class="fe-log"><div class="fe-log-head"><p class="fe-kicker">{e.project}</p><span class="tag warm" lang={e.language}>{e.status}</span></div>
+<h2 class="h4">{e.title}</h2><div class:list={['fe-log-body', { 'has-img': e.image }]}><dl class="fe-log-list"><dt>What changed</dt><dd><ul>{e.changes.map((c: string) => <li>{c}</li>)}</ul></dd>
+{e.next && <><dt>Next step</dt><dd>{e.next}</dd></>}</dl>{e.image && <div class="fe-log-img"><Img p={e.image} /></div>}</div>
+<div class="fe-meta tiny">{e.logHref && <a class="link" href={fixHref(e.logHref)}>{e.logLabel} <span aria-hidden="true">→</span></a>}<TagList tags={e.tags} /></div></div>

@@ -1,0 +1,12 @@
+---
+import { fixHref } from '../../lib/feed';
+import Img from './Img.astro';
+import Art from './Art.astro';
+import TagList from './TagList.astro';
+import { fullDate } from '../../lib/feed';
+const { entry: e } = Astro.props;
+const href = fixHref(e.href);
+---
+{e.cover && <div class="fe-cover"><Img p={e.cover} /></div>}<div class:list={['fe-writing', { 'has-art': e.art }]}><div class="fe-writing-text">
+<h2 class="h3" lang={e.language}>{href ? <a href={href}>{e.title}</a> : e.title}</h2><p class="small" lang={e.language}>{e.summary}</p>
+<p class="fe-meta tiny">{e.publishedAt && <span><span>Published</span> <time datetime={e.publishedAt}>{fullDate(e)}</time></span>}{e.readingMinutes && <span><span>{e.readingMinutes} min read</span></span>}</p><TagList tags={e.tags} />{!href && <p class="fe-pending tiny">Sample preview · Full entry coming later</p>}</div>{e.art && <Art name={e.art} />}</div>

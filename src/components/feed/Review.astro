@@ -1,0 +1,21 @@
+---
+import { fixHref, feedPlatforms } from '../../lib/feed';
+import Img from './Img.astro';
+import Rating from './Rating.astro';
+const { entry: e } = Astro.props;
+const book = e.subject === 'Book';
+const hasCover = book || !!e.cover;
+const href = fixHref(e.href);
+---
+<div class:list={['fe-review', { 'is-book': book, 'no-cover': !hasCover }]}>{hasCover && <div class="fe-review-cover">{book ? <div class="fe-book" aria-hidden="true"><span class="fe-book-title">{e.title}</span>{e.creator && <span class="fe-book-author">{e.creator}</span>}</div> : <Img p={e.cover} class="fe-device" />}</div>}<div class="fe-review-text">
+<p class="fe-kicker">Review · {e.subject}</p><h2 class="h3" lang={e.language}>{href ? <a href={href}>{e.title}</a> : e.title}</h2>
+{e.creator && <p class="small">{e.creator}{e.fictional && <> <span class="mock">Fictional</span></>}</p>}{e.meta && <p class="tiny">{e.meta}</p>}<Rating entry={e} />{e.platforms && e.platforms.length > 0 && <p class="fe-platforms"><span class="tiny">Watched on</span><span class="fe-platform-list">{e.platforms.map((x: any) => {
+  const p = feedPlatforms[x.id] ?? { label: x.id, mark: x.id.charAt(0).toUpperCase() };
+  return x.href
+    ? <a class="fe-platform" href={x.href} target="_blank" rel="noopener noreferrer">{x.id === 'cinema' ? <svg class="fe-platform-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h18v3.2a1.8 1.8 0 0 0 0 3.6V17H3v-3.2a1.8 1.8 0 0 0 0-3.6Z"/></svg> : <span class="fe-platform-mark" aria-hidden="true">{p.mark}</span>}<span>{p.label}</span> <span class="fe-sr">Opens in a new tab</span></a>
+    : <span class="fe-platform">{x.id === 'cinema' ? <svg class="fe-platform-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h18v3.2a1.8 1.8 0 0 0 0 3.6V17H3v-3.2a1.8 1.8 0 0 0 0-3.6Z"/></svg> : <span class="fe-platform-mark" aria-hidden="true">{p.mark}</span>}<span>{p.label}</span></span>;
+})}</span></p>}
+<p class="fe-review-body" lang={e.language}>{e.body}</p>
+{e.recommend && <p class="fe-recommend small"><b>Who I’d recommend it to</b> {e.recommend}</p>}
+{href && e.linkLabel && <p class="fe-meta tiny"><a class="link" href={href}>{e.linkLabel} <span aria-hidden="true">→</span></a></p>}
+{e.fictional && <p class="tiny">{e.fictional}</p>}</div></div>

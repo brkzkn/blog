@@ -1,0 +1,21 @@
+---
+// One timeline entry (prototype: entryHtml in feed-render.js). Used by the home feed and by the dev review page.
+// Props: entry (FeedEntry), first/last (timeline line caps; the home feed's script recomputes them while filtering).
+// Slot `meta` is appended to the left meta column (the review page puts variant labels there).
+import { feedTypeLabels, feedCategoryLabels, dateText, parts, langNames, searchText } from '../../lib/feed';
+import Note from './Note.astro';
+import Album from './Album.astro';
+import Writing from './Writing.astro';
+import Project from './Project.astro';
+import Milestone from './Milestone.astro';
+import Review from './Review.astro';
+import Restaurant from './Restaurant.astro';
+import Trip from './Trip.astro';
+import Monthly from './Monthly.astro';
+import LinkCard from './LinkCard.astro';
+
+const { entry: e, first = false, last = false } = Astro.props;
+const R: Record<string, any> = { note: Note, album: Album, writing: Writing, project: Project, milestone: Milestone, review: Review, restaurant: Restaurant, trip: Trip, monthly: Monthly, link: LinkCard };
+const Body = R[e.type];
+---
+<article class:list={['timeline-entry', 'fe-entry', { 'is-first': first, 'is-last': last }]} id={`entry-${e.id}`} data-feed-entry={e.id} data-type={e.type} data-feed-cat={e.category} data-month-key={parts(e).month} data-search={searchText(e)}><div class="timeline-meta"><time datetime={e.publishedAt}><span class="timeline-date">{dateText(e)}</span><span class="timeline-year">{parts(e).y}</span></time><span class="timeline-category">{feedCategoryLabels[e.category]}</span><span class="timeline-type">{feedTypeLabels[e.type]}</span><span class="timeline-origin mock"><span class="fe-sr">Written in {langNames[e.language]}</span><span aria-hidden="true">{e.language.toUpperCase()}</span>{e.sample && <> · <span>Sample</span></>}</span><slot name="meta" /></div><div class={`timeline-content fe-body-${e.type}`}><Body entry={e} /></div></article>

@@ -1,0 +1,21 @@
+---
+// Home strip "Selected architecture" (ADR-004): featured and published work entries, up to three.
+// No placeholders; renders nothing when none. Layout is chosen by CSS from data-count (no client JS).
+import { getFeaturedWork, workUrl } from '../../lib/work';
+
+const items = await getFeaturedWork();
+const sample = items.some((w) => w.data.sample);
+---
+{items.length > 0 && (
+  <section class="selected-work" aria-labelledby="selected-title"><div class="wrap selected-grid">
+    <div class="selected-head"><p class="cat" id="selected-title">SELECTED ARCHITECTURE</p>{sample && <span class="mock">Illustrative case study</span>}<a class="selected-all" href="/work/">All case studies →</a></div>
+    <ul class="selected-list" data-count={items.length}>
+      {items.map((w, i) => (
+        <li><a class:list={['selected-item', { 'is-lead': i === 0 }]} href={workUrl(w)}>
+          <p class="tiny"><span>{w.data.industry}, {w.data.years}</span><span class="selected-arrow" aria-hidden="true">↗</span></p>
+          {i === 0 ? <h2>{w.data.title}</h2> : <h3>{w.data.title}</h3>}
+        </a></li>
+      ))}
+    </ul>
+  </div></section>
+)}

@@ -1,0 +1,5 @@
+---
+import { fixHref } from '../../lib/feed';
+const { entry: e } = Astro.props;
+---
+<p class="fe-note-text" lang={e.language}>{e.body}</p>{e.href && <p class="fe-meta tiny"><a class="link" href={fixHref(e.href)}>{e.linkLabel ?? 'Open note'} <span aria-hidden="true">→</span></a></p>}

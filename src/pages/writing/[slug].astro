@@ -1,0 +1,88 @@
+---
+// agentic-workflows.html generalised: every post of type `writing` gets a long-form view at /writing/<slug>/.
+// /notes/<slug>/ is the canonical URL for every post (ADR-002), so this page points its canonical there.
+import { Image } from 'astro:assets';
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import '../../styles/writing.css';
+import {
+  getWriting, writingMeta, longDate, shortDate, isoDate, originTitle, postSlug, isPreview, SAMPLE_RELATED,
+} from '../../lib/writing';
+
+export async function getStaticPaths() {
+  const posts = await getWriting();
+  return posts.map((post) => ({ params: { slug: postSlug(post) }, props: { post } }));
+}
+const { post } = Astro.props;
+const slug = postSlug(post);
+const { Content, headings } = await render(post);
+const m = writingMeta(post);
+const d = post.data;
+const toc = headings.filter((h) => h.depth === 2);
+const others = (await getWriting()).filter((p) => p !== post).slice(0, 3);
+const related = [
+  ...others.map((p) => ({ href: `/writing/${postSlug(p)}/`, cat: writingMeta(p).topic, title: p.data.title!, text: writingMeta(p).lede, iso: isoDate(p.data.date), date: shortDate(p.data.date), min: writingMeta(p).minutes, lang: p.data.lang })),
+  ...(isPreview ? SAMPLE_RELATED.map((r) => ({ ...r, href: undefined, lang: 'en' as const })) : []),
+].slice(0, 3);
+const leadAlt = d.alt[0] ?? 'Lead image';
+---
+<Base title={d.title!} description={m.description} originalLang={d.lang} canonical={`/notes/${slug}/`} nav="writing">
+<div class="wrap original-language-note" data-original-note hidden></div>
+<article>
+<section class="pagehead article-head">
+  <div class="wrap">
+    <nav class="breadcrumb" aria-label="Breadcrumb"><ol><li><a href="/writing/">Writing</a></li><li>{m.topic}</li></ol></nav>
+    {d.sample && <p class="small"><span class="mock">sample article</span></p>}
+    <h1 class="h1">{d.title}</h1>
+    <p class="lede">{m.lede}</p>
+    <div class="article-byline">
+      <div class="row">
+        <div class="ph r11 avatar-ph" aria-hidden="true"></div>
+        <div class="col"><span class="byline-name">Burak Özkan</span><span class="tiny"><span>Published <time datetime={isoDate(d.date)}>{longDate(d.date)}</time></span> · <span>{m.minutes} min read</span> <span class="origin-chip" title={originTitle(d.lang)}>{d.lang.toUpperCase()}</span></span></div>
+      </div>
+      <div class="row byline-tags">{d.tags.slice(0, 3).map((t) => <span class="tag unavailable" data-no-label>{t}</span>)}</div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap article-lead">
+  {d.cover
+    ? <div class="ph r21 photo-placeholder"><Image src={d.cover} alt={leadAlt} widths={[720, 1240]} sizes="(min-width: 1240px) 1160px, 100vw" loading="eager" /></div>
+    : <div class="ph r21 blue" role="img" aria-label={leadAlt}><span class="cap">{leadAlt}</span></div>}
+</div>
+
+<section class="article-main">
+  <div class="wrap article-layout aside-first">
+    <aside class="article-aside sticky">
+      {toc.length > 1 && <nav class="toc" aria-label="In this post"><p class="tiny">In this post</p><ol>{toc.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}</ol></nav>}
+      <div class="share"><p class="tiny">Share</p><span aria-live="polite"><button type="button" class="copy-link link">Copy link</button></span><span class="unavailable link">LinkedIn</span></div>
+    </aside>
+    <div class="article-body prose">
+      <Content />
+    </div>
+  </div>
+</section>
+
+<section class="section tight article-close">
+  <div class="wrap">
+    <div class="article-close-row">
+      <div class="row byline-tags"><span class="small">Tagged</span>{d.tags.map((t) => <span class="tag unavailable" data-no-label>{t}</span>)}</div>
+      <a class="link" href={`mailto:hello@burakozkan.net?subject=${encodeURIComponent(`Re: ${d.title}`)}`}>Reply by email</a>
+    </div>
+  </div>
+</section>
+</article>
+
+{related.length > 0 && (
+<section class="section article-related">
+  <div class="wrap">
+    <div class="sechead"><h2 class="h2">Related posts</h2><a class="link" href="/writing/">All writing</a></div>
+    <div class="g3">
+      {related.map((r) => (
+        <a class:list={['card', { unavailable: !r.href }]} href={r.href}><p class="cat">{r.cat}</p><h3 class="h4">{r.title}</h3><p class="small">{r.text}</p><p class="tiny"><time datetime={r.iso}>{r.date}</time> · <span>{r.min} min read</span> <span class="origin-chip" title={originTitle(r.lang)}>{r.lang.toUpperCase()}</span></p></a>
+      ))}
+    </div>
+  </div>
+</section>
+)}
+</Base>

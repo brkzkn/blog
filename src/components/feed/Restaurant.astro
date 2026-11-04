@@ -1,0 +1,17 @@
+---
+import Img from './Img.astro';
+import Rating from './Rating.astro';
+import CtaRow from './CtaRow.astro';
+import { fixHref } from '../../lib/feed';
+const { entry: e } = Astro.props;
+const href = fixHref(e.href);
+const sym = e.currency || '₺';
+---
+<div class:list={['fe-review', 'fe-restaurant', e.photo ? { 'is-landscape': e.photo.w / e.photo.h > 1.15 } : 'no-cover']}>{e.photo && <div class="fe-review-cover"><Img p={e.photo} class="fe-device" /></div>}<div class="fe-review-text">
+{e.cuisine && <p class="fe-kicker" lang={e.language}>{e.cuisine}</p>}<h2 class="h3" lang={e.language}>{href ? <a href={href}>{e.name}</a> : e.name}</h2>
+<p class="small"><span lang={e.language}>{e.area}</span>{e.price ? ' · ' : ''}{e.price && <span class="fe-price"><span class="fe-sr">Price level {e.price} of 4</span><span aria-hidden="true">{sym.repeat(e.price)}<i>{sym.repeat(4 - e.price)}</i></span></span>}{e.fictional && <> <span class="mock">Fictional</span></>}</p>
+<Rating entry={e} />{e.visited && <p class="tiny">{e.visited}</p>}
+<p class="fe-review-body" lang={e.language}>{e.body}</p>
+{e.order && <p class="fe-recommend small"><b>Order again</b> <span lang={e.language}>{e.order}</span></p>}
+<CtaRow href={e.href} label={e.linkLabel} />
+{e.fictional && <p class="tiny">Fictional place, sample content.</p>}</div></div>

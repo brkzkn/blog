@@ -1,0 +1,176 @@
+---
+// Case study detail (prototype/architecture-notes.html). Sections follow docs/content-model.md: an empty
+// section is not rendered, "Jump to" links list the sections that exist (hidden below three), the outcome
+// strip needs at least two real figures, the closing call to action is always shown.
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { getWork, type Work } from '../../lib/work';
+import { md, blocks } from '../../lib/md';
+
+export async function getStaticPaths() {
+  return (await getWork()).map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props as { entry: Work };
+const d = entry.data;
+const s = d.sections;
+const { Content } = await render(entry);
+const hasMap = Boolean(entry.body?.trim() || s.boundaries);
+const hasOutcomes = d.metrics.length > 0 || Boolean(s.outcomes || s.lessons);
+
+// The context may end with a "### Label" block (a list); it becomes the tinted aside next to the prose.
+const ASIDE_ATTR = ' style="margin: 10px 0 0; padding-left: 18px; font-size: 15px; line-height: 1.5"';
+const preview = import.meta.env.PUBLIC_PREVIEW !== 'false';
+const asideAt = s.context?.search(/^###\s/m) ?? -1;
+const contextMain = s.context ? (asideAt >= 0 ? s.context.slice(0, asideAt) : s.context) : '';
+const contextAside = asideAt >= 0 ? s.context!.slice(asideAt).trim().split('\n') : [];
+const contextAsideLabel = contextAside[0]?.replace(/^###\s+/, '');
+const contextAsideHtml = md(contextAside.slice(1).join('\n'), { ul: ASIDE_ATTR });
+
+const toc = [
+  s.context && ['context', 'Context'],
+  ['problem', 'Problem'],
+  hasMap && ['system-map', 'System map'],
+  ['decisions', 'Decisions'],
+  s.operations && ['operations', 'Operations'],
+  hasOutcomes && ['outcomes', 'Outcomes'],
+].filter(Boolean) as [string, string][];
+
+const facts: [string, string][] = [
+  ['Role', d.role], ['Duration', d.duration], ['Industry', d.industry], ['Stack', d.stack.join(', ')],
+];
+const opItems = s.operations
+  ? blocks(s.operations).flatMap((b) => b.split('\n')).map((l) => l.replace(/^\s*[-*]\s+/, '').trim()).filter(Boolean)
+  : [];
+const opHtml = (t: string) =>
+  md(t).replace(/^<p>|<\/p>$/g, '').replace(/<strong>/g, '<strong style="font-weight: 500">');
+const noteNum = (i: number) => String(i + 1).padStart(2, '0');
+---
+<Base title={d.title} description={d.summary.length > 200 ? undefined : d.summary} originalLang="en">
+<div class="wrap original-language-note" data-original-note hidden></div><div class="wrap detail-back"><a class="link" href="/work/">← Back to Work</a></div>
+
+<section class="pagehead" style="padding-bottom: 56px">
+  <div class="wrap col" style="gap: 28px">
+    <p class="small"><a class="link" href="/work/">Work</a>  /  Case study  {d.sample && <span class="mock">mock content, anonymised</span>}</p>
+    <h1 class="h1" style="max-width: 1000px">{d.title}</h1>
+    <div class="grid" style="align-items: start; margin-top: 8px">
+      <p class="lede span7">{d.summary}</p>
+      <dl class="kv span5" style="grid-template-columns: 130px 1fr; row-gap: 12px">
+        {facts.map(([k, v]) => <Fragment><dt>{k}</dt><dd>{v}</dd></Fragment>)}
+      </dl>
+    </div>
+  </div>
+</section>
+
+{(d.metrics.length >= 2 || toc.length >= 3) && (
+  <section class="cs-glance" aria-labelledby="glance-title"><div class="wrap">
+    {d.metrics.length >= 2 && <>
+      <p class="cat" id="glance-title">Outcome at a glance</p>
+      <ul>
+        {d.metrics.map((m) => <li><span class="fig">{m.value}</span><span class="small">{m.label}</span></li>)}
+      </ul>
+    </>}
+    {toc.length >= 3 && (
+      <nav class="cs-toc" aria-label="On this page"><span class="tiny">Jump to</span>{toc.map(([id, label]) => <a href={`#${id}`}>{label}</a>)}</nav>
+    )}
+  </div></section>
+)}
+
+{s.context && (
+  <section class="section tight" style="border-top: 1px solid var(--line)">
+    <div class="wrap grid">
+      <div class="span3"><h2 class="h3" id="context">Business context</h2></div>
+      <div class="span6 prose" set:html={md(contextMain)} />
+      {contextAside.length > 0 && (
+        <div class="span3 panel tint" style="align-self: start">
+          <p class="tiny">{contextAsideLabel}</p>
+          <Fragment set:html={contextAsideHtml} />
+        </div>
+      )}
+    </div>
+  </section>
+)}
+
+<section class="section tight" style="border-top: 1px solid var(--line)">
+  <div class="wrap grid">
+    <div class="span3"><h2 class="h3" id="problem">Architectural problem</h2></div>
+    <div class="span6 prose" set:html={md(s.problem)} />
+    {s.constraints && (
+      <div class="span3 panel" style="align-self: start">
+        <p class="tiny">Constraints that shaped the design</p>
+        <Fragment set:html={md(s.constraints, { ul: ASIDE_ATTR })} />
+      </div>
+    )}
+  </div>
+</section>
+
+{hasMap && (
+  <section class="section" style="border-top: 1px solid var(--line)">
+    <div class="wrap">
+      <div class="sechead" style="margin-bottom: 32px">
+        <h2 class="h2" id="system-map">System map after the rebuild</h2>
+        {s.boundaries && <p class="small" style="max-width: 420px">{s.boundaries}</p>}
+      </div>
+      <Content />
+    </div>
+  </section>
+)}
+
+<section class="section" style="border-top: 1px solid var(--line)">
+  <div class="wrap">
+    <div class="sechead">
+      <h2 class="h2" id="decisions">Key decisions and their trade&#8209;offs</h2>
+    </div>
+    <div class="g2" style="gap: 24px">
+      {s.decisions.map((x, i) => (
+        <div class="panel col" style="gap: 12px">
+          <p class="cat">Decision {i + 1}</p>
+          <h3 class="h4">{x.title}</h3>
+          <Fragment set:html={md(x.body, { p: ' class="small"' })} />
+          <p class="small"><strong style="color: var(--ink); font-weight: 500">Cost:</strong> {x.tradeoff}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+{(s.operations || hasOutcomes) && (
+  <section class="section" style="border-top: 1px solid var(--line)">
+    <div class="wrap grid">
+      {s.operations && (
+        <div class="span6 col" style="gap: 20px">
+          <h2 class="h3" id="operations">Operational concerns</h2>
+          <ul class="list">
+            {opItems.map((t, i) => <li><span class="num">{noteNum(i)}</span><span class="small" style="color: var(--ink)" set:html={opHtml(t)} /></li>)}
+          </ul>
+        </div>
+      )}
+      {hasOutcomes && (
+        <div class="span6 col" style="gap: 20px">
+          <h2 class="h3" id="outcomes">Outcomes and lessons</h2>
+          {s.outcomes && <div class="prose" style="font-size: 17px" set:html={md(s.outcomes)} />}
+          {d.metrics.length > 0 && (
+            <div class="g2" style="gap: 16px">
+              {d.metrics.map((m, i) => <div class={i < 2 ? 'panel warm' : 'panel'}><p class="h2" style="font-size: 40px">{m.value}</p><p class="small">{m.label}</p></div>)}
+            </div>
+          )}
+          {s.lessons && <div class="prose" style="font-size: 17px" set:html={md(s.lessons)} />}
+        </div>
+      )}
+    </div>
+  </section>
+)}
+
+<section class="cs-cta"><div class="wrap">
+  <div><p class="cat">Working on something similar?</p><p class="h4">If your order flow, release process or event backbone looks like this, I am glad to talk it through.</p></div>
+  <a class="btn primary" href="/about/#social-profiles">Get in touch →</a>
+</div></section>
+<section class="section tight" style="border-top: 1px solid var(--line)">
+  <div class="wrap" style="display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; align-items: center">
+    <a class="link" href="/work/">Back to all work</a>
+    {preview && d.sample && (
+      <div class="row" style="gap: 12px; flex-wrap: wrap"><span class="small">Related reading:</span><span class="tag unavailable" title="Sample preview; full content is not available yet">Outbox before you need it</span><span class="tag unavailable" title="Sample preview; full content is not available yet">One database per service</span></div>
+    )}
+  </div>
+</section>
+</Base>

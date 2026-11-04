@@ -1,0 +1,134 @@
+---
+import Base from '../../layouts/Base.astro';
+import WorkFigure from '../../components/work/WorkFigure.astro';
+import { sampleTeasers, sampleNotes } from '../../components/work/sampleTeasers';
+import { getWork, readDiagram, workUrl } from '../../lib/work';
+import { firstSentence } from '../../lib/md';
+import '../../styles/work.css';
+
+// Real case studies come from the work collection; sample teasers and sample notes show in the design preview only.
+const preview = import.meta.env.PUBLIC_PREVIEW !== 'false';
+const [lead, ...rest] = await getWork();
+const mapArt = readDiagram('/assets/diagrams/system-map-template.svg');
+const anySample = preview || [lead, ...rest].some((w) => w?.data.sample);
+
+// Tiles on the lead card, derived from the entry: first decision, its cost, first outcome figure.
+const leadTiles = lead ? [
+  { label: 'Decision', text: lead.data.sections.decisions[0].title, cls: 'panel tint' },
+  { label: 'Trade-off', text: firstSentence(lead.data.sections.decisions[0].tradeoff.replace(/;.*/, '.')).replace(/^./, (c) => c.toUpperCase()), cls: 'panel tint' },
+  ...(lead.data.metrics[0] ? [{ label: 'Outcome', text: `${lead.data.metrics[0].value} ${lead.data.metrics[0].label}`, cls: 'panel warm' }] : []),
+] : [];
+---
+<Base title="Architecture work, written up the way I actually did it." originalLang="en">
+<section class="pagehead">
+  <div class="wrap grid" style="align-items: end">
+    <div class="span8 col" style="gap: 24px">
+      <h1 class="h1">Architecture work, written up the way I actually did it.</h1>
+      <p class="lede" style="max-width: 640px">Most of what I build has no screen to screenshot. These notes focus on the business context, the constraints that mattered, the decisions and what they cost, and how the systems behaved once real traffic arrived.</p>
+    </div>
+    <div class="span4 col" style="gap: 10px; padding-bottom: 8px">
+      <dl class="kv" style="grid-template-columns: 120px 1fr">
+        <dt>Years</dt><dd>Backend engineering &amp; technical architecture</dd>
+        <dt>Focus</dt><dd>Event-driven backends, service boundaries, data ownership, platform operations</dd>
+        <dt>Typical stack</dt><dd>.NET, Kafka, PostgreSQL, Kubernetes, Redis</dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
+
+<section class="section tight" style="border-top: 1px solid var(--line)">
+  <div class="wrap grid" style="align-items: center">
+    <div class="span5 col" style="gap: 16px">
+      <h2 class="h3">How I draw a system</h2>
+      <p class="body muted">Four layers, two kinds of lines, and a legend that fits on one line. Solid lines are requests, dashed lines are events. If I cannot say which one a line is, the diagram is not finished.</p>
+      <a class="link" href="#case-studies">See it applied in the case studies</a>
+    </div>
+    <div class="span7"><figure class="wk-fig wk-map"><Fragment set:html={mapArt.svg} /><figcaption>{mapArt.caption}</figcaption></figure></div>
+  </div>
+</section>
+
+
+<section class="section tight" style="border-top: 1px solid var(--line); border-bottom: 1px solid var(--line)">
+  <div class="wrap grid">
+    <div class="span4"><h2 class="h3">What a case study here covers</h2></div>
+    <div class="span8" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 40px; font-size: 15px; color: var(--ink2); line-height: 1.55">
+      <p><strong style="color: var(--ink); font-weight: 500">Business context.</strong> Who needed what, and why now.</p>
+      <p><strong style="color: var(--ink); font-weight: 500">The architectural problem.</strong> The thing the current system could not do.</p>
+      <p><strong style="color: var(--ink); font-weight: 500">Constraints.</strong> Teams, budget, legacy, regulation, release cadence.</p>
+      <p><strong style="color: var(--ink); font-weight: 500">Decisions and trade-offs.</strong> What was chosen, what was rejected, and what it cost.</p>
+      <p><strong style="color: var(--ink); font-weight: 500">System boundaries.</strong> Who owns which data and which events.</p>
+      <p><strong style="color: var(--ink); font-weight: 500">Operations and outcomes.</strong> How it ran, what broke, what I would change.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="case-studies">
+  <div class="wrap">
+    <div class="sechead">
+      <h2 class="h2">Case studies</h2>
+      <p class="small">Names and figures are anonymised. {anySample && <span class="mock">mock content</span>}</p>
+    </div>
+
+    {lead && (
+      <a href={workUrl(lead)} class="grid panel" style="padding: 40px; color: inherit; align-items: center; margin-bottom: 32px">
+        <div class="span7 col" style="gap: 18px">
+          <p class="cat">{lead.data.industry}, {lead.data.years}</p>
+          <h3 class="h3">{lead.data.title}</h3>
+          <p class="body muted" style="max-width: 560px">{firstSentence(lead.data.summary)}</p>
+          <div class="row" style="gap: 6px; flex-wrap: wrap">{lead.data.stack.map((t) => <span class="tag">{t}</span>)}</div>
+        </div>
+        {/* Case-study image slot: a figure.wk-fig holds either the drawing (svg) or a real photo (img, 56:19, object-fit cover, descriptive alt). Keep the frame and the caption; swap only the svg for the img. Check photos for client names, product names and addresses first. */}
+        <div class="span5"><WorkFigure work={lead.data} /></div>
+        <div class="span12 wk-tiles" data-count={leadTiles.length} style="grid-column: 1 / -1">
+          {leadTiles.map((t) => <div class={t.cls} style="padding: 18px"><p class="tiny">{t.label}</p><p style="font-size: 15px; margin-top: 4px">{t.text}</p></div>)}
+        </div>
+      </a>
+    )}
+
+    {!lead && !preview && <p class="body muted">The first case studies are being written up.</p>}
+
+    {(rest.length > 0 || preview) && (
+      <div class="g2">
+        {rest.map((w) => (
+          <a class="card panel" href={workUrl(w)} style="padding: 32px; gap: 16px; color: inherit">
+            <WorkFigure work={w.data} />
+            <p class="cat">{w.data.industry}, {w.data.years}</p>
+            <h3 class="h4">{w.data.title}</h3>
+            <p class="small">{firstSentence(w.data.summary)}</p>
+            <div class="row" style="gap: 6px; flex-wrap: wrap">{w.data.stack.map((t) => <span class="tag">{t}</span>)}</div>
+          </a>
+        ))}
+        {preview && sampleTeasers.map((t) => (
+          <div class="card panel unavailable" style="padding: 32px; gap: 16px" title="Sample preview; full content is not available yet">
+            <WorkFigure work={{ title: t.title, diagram: t.diagram }} />
+            <p class="cat">{t.kicker}</p>
+            <h3 class="h4">{t.title}</h3>
+            <p class="small">{t.summary}</p>
+            <div class="row" style="gap: 6px; flex-wrap: wrap">{t.tags.map((x) => <span class="tag">{x}</span>)}</div>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+</section>
+
+{preview && (
+  <section class="section" style="border-top: 1px solid var(--line)">
+    <div class="wrap grid">
+      <div class="span4 col" style="gap: 16px">
+        <h2 class="h2">Architecture notes</h2>
+        <p class="body muted">Shorter pieces on decisions that recur across projects. Each is a position I hold now, with the reasoning, so future me can argue with it.</p>
+        <a class="link" href="/writing/">More in the blog, under Software architecture</a>
+      </div>
+      <div class="span8">
+        <ul class="list">
+          {sampleNotes.map((n) => (
+            <li><span class="num">{n.num}</span><span class="col" style="gap: 4px; flex: 1"><span class="h4 unavailable" style="color: var(--ink)" title="Sample preview; full content is not available yet">{n.title}</span><span class="small">{n.text}</span></span><span class="small">{n.kind}</span></li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+)}
+</Base>

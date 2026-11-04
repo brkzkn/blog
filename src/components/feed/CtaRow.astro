@@ -1,0 +1,7 @@
+---
+// A visible, button-like link to a detail page; the default slot is whatever sits beside it on the row.
+import { fixHref } from '../../lib/feed';
+const { href, label } = Astro.props;
+const has = !!href || Astro.slots.has('default');
+---
+{has && <div class="fe-cta-row">{href && <a class="btn sm fe-cta" href={fixHref(href)}>{label} <span aria-hidden="true">→</span></a>}<slot /></div>}

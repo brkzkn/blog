@@ -1,0 +1,5 @@
+---
+interface Props { value: number }
+const { value } = Astro.props;
+---
+<span class="stars" role="img" aria-label={`${value} of 5`}>{[1, 2, 3, 4, 5].map((n) => <i class={n > value ? 'off' : undefined}></i>)}</span>

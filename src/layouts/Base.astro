@@ -1,0 +1,76 @@
+---
+// Base layout: <head>, skip link, header, preview banner, <main>, footer, script entry.
+// Props:
+//   title            page title without the site suffix (rendered "<title> — Burak Özkan")
+//   rawTitle         use `title` exactly as given (home page)
+//   description      meta description
+//   noindex          adds <meta name="robots" content="noindex">
+//   originalLang     'en' | 'tr' -> <main data-original-lang>; set on every page that shows content with an original language
+//   nav              override the active nav item ('home'|'work'|'projects'|'life'|'gear'|'writing'|'about'|null);
+//                    default is computed from Astro.url (/notes/ and /life/* count as Life)
+//   canonical        absolute or site-relative canonical URL; default is the current path on https://burakozkan.net
+// Slots: default (inside <main>) and `head` (extra <head> elements, e.g. page-specific scripts).
+import '../styles/site.css';
+import Header, { type NavSection } from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  title: string;
+  rawTitle?: boolean;
+  description?: string;
+  noindex?: boolean;
+  originalLang?: 'en' | 'tr';
+  nav?: NavSection;
+  canonical?: string;
+}
+const {
+  title,
+  rawTitle = false,
+  description = 'Burak Özkan’s personal space for architecture, projects and life.',
+  noindex = false,
+  originalLang,
+  canonical,
+} = Astro.props;
+
+const path = Astro.url.pathname;
+const computed: NavSection =
+  path === '/' ? 'home'
+  : path.startsWith('/work/') ? 'work'
+  : path.startsWith('/projects/') ? 'projects'
+  : path.startsWith('/life/') || path.startsWith('/notes/') ? 'life'
+  : path.startsWith('/gear/') ? 'gear'
+  : path.startsWith('/writing/') ? 'writing'
+  : path.startsWith('/about/') ? 'about'
+  : null;
+const current = Astro.props.nav !== undefined ? Astro.props.nav : computed;
+const fullTitle = rawTitle ? title : `${title} — Burak Özkan`;
+const canonicalUrl = new URL(canonical ?? path, Astro.site).href;
+const preview = import.meta.env.PUBLIC_PREVIEW !== 'false';
+---
+<!doctype html>
+<html lang="en">
+<head>
+<script is:inline>(function(){let t='system',l='en';try{t=localStorage.getItem('burak-theme')||t;l=localStorage.getItem('burak-language')||l}catch{}if(!['light','dark','system'].includes(t))t='system';if(!['en','tr'].includes(l))l='en';window.__burakPrefs={theme:t,lang:l};document.documentElement.lang=l;document.documentElement.dataset.theme=t==='system'?(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'):t})();</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{fullTitle}</title>
+<meta name="description" content={description}>
+<link rel="canonical" href={canonicalUrl}>
+{noindex && <meta name="robots" content="noindex">}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap">
+<link rel="alternate" type="application/rss+xml" title="Burak Özkan" href="/rss.xml">
+<slot name="head" />
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<Header current={current} />
+{preview && <div class="demo-notice">DESIGN PREVIEW · Stories, product ownership, career examples and metrics are sample content.</div>}
+<main id="main" data-original-lang={originalLang}>
+<slot />
+</main>
+<Footer />
+<script>import '../scripts/main.ts';</script>
+</body>
+</html>

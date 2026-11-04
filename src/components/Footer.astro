@@ -1,0 +1,5 @@
+---
+// Site footer. The "preview" line is a launch-cleanup marker, shown only while PUBLIC_PREVIEW !== 'false'.
+const preview = import.meta.env.PUBLIC_PREVIEW !== 'false';
+---
+<footer class="foot"><div class="wrap"><div class="grid"><div class="span5 col"><p class="brand">Burak Özkan</p><p class="lede">Systems I design, things I build, a life worth remembering.</p></div><div class="span3"><h4>Explore</h4><ul><li><a href="/work/">Work</a></li><li><a href="/projects/">Projects</a></li><li><a href="/life/">Life</a></li><li><a href="/writing/">Writing</a></li></ul></div><div class="span4"><h4>About &amp; follow</h4><ul><li><a href="/about/">About / CV / contact</a></li><li><a href="/gear/">My gear</a></li><li><a class="sidebar-rss" href="/rss.xml">RSS feed</a></li></ul></div></div><div class="end"><span>© 2026 Burak Özkan · Istanbul</span>{preview && <span>V4.2 preview · Sample entries and illustrative images</span>}</div></div></footer>

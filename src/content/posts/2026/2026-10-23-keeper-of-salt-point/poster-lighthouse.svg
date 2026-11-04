@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900" width="600" height="900" role="img" aria-label="Illustrative sample poster: a lighthouse on a rocky point at night">
+<rect width="600" height="900" fill="#14213D"/>
+<circle cx="470" cy="150" r="46" fill="#F3EEE3"/>
+<polygon points="300,300 600,230 600,370" fill="#1F4E5A"/>
+<polygon points="300,300 0,230 0,370" fill="#1F4E5A"/>
+<rect y="600" width="600" height="300" fill="#1F4E5A"/>
+<rect y="640" width="600" height="6" fill="#3F7F86"/>
+<rect y="670" width="600" height="6" fill="#14213D"/>
+<polygon points="120,620 190,540 260,520 340,505 420,540 500,600 520,620" fill="#0B1424"/>
+<polygon points="262,510 338,510 326,330 274,330" fill="#F3EEE3"/>
+<polygon points="269,440 331,440 328,400 272,400" fill="#3F7F86"/>
+<rect x="268" y="322" width="64" height="10" fill="#0B1424"/>
+<rect x="276" y="282" width="48" height="40" fill="#C4561F"/>
+<polygon points="270,282 330,282 300,252" fill="#0B1424"/>
+<rect x="294" y="488" width="12" height="22" fill="#14213D"/>
+<polygon points="60,640 140,610 200,640" fill="#0B1424"/>
+<text x="300" y="720" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="44" letter-spacing="4" fill="#F3EEE3">THE KEEPER OF</text>
+<text x="300" y="772" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="44" letter-spacing="4" fill="#F3EEE3">SALT POINT</text>
+<text x="300" y="822" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16" letter-spacing="3" fill="#F3EEE3">A SAMPLE FILM</text>
+</svg>
