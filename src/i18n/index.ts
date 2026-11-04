@@ -1,11 +1,13 @@
 // Locale helpers shared by layouts, components and astro.config. Static-only: no middleware, no redirects.
 import { translatedPaths } from './translated';
+import { comingSoon } from '../config/site';
 
 export const locales = ['en', 'tr'] as const;
 export type Locale = (typeof locales)[number];
 export const defaultLocale: Locale = 'en';
 
-export const isTranslated = (enPath: string) => translatedPaths.includes(enPath);
+// While the site is in coming-soon mode the home page is a real two-language page, so it is treated as translated.
+export const isTranslated = (enPath: string) => translatedPaths.includes(enPath) || (comingSoon && enPath === '/');
 
 /** '/tr/work/' -> '/work/'; '/work/' -> '/work/'. */
 export function stripLocale(path: string): string {

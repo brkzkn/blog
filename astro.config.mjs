@@ -7,6 +7,10 @@ import { translatedPaths } from './src/i18n/translated.ts';
 const isTr = (/** @type {string} */ page) => new URL(page).pathname.startsWith('/tr/');
 const trPath = (/** @type {string} */ page) => new URL(page).pathname.slice(3);
 
+// Coming-soon mode (deploy.yml): only the holding page and the privacy page are listed.
+const comingSoon = process.env.PUBLIC_COMING_SOON === 'true';
+const holdingPages = ['/', '/tr/', '/privacy/', '/tr/privacy/'];
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://burakozkan.net',
@@ -24,7 +28,7 @@ export default defineConfig({
   integrations: [
     // /dev/* is development only and never ships; keep it out of the sitemap regardless.
     sitemap({
-      filter: (page) => !page.includes('/dev/') && !page.endsWith('/404/') && (!isTr(page) || translatedPaths.includes(trPath(page))),
+      filter: (page) => (!comingSoon || holdingPages.includes(new URL(page).pathname)) && !page.includes('/dev/') && !page.endsWith('/404/') && (!isTr(page) || translatedPaths.includes(trPath(page)) || (comingSoon && trPath(page) === '/')),
       i18n: { defaultLocale: 'en', locales: { en: 'en', tr: 'tr' } },
     }),
   ],

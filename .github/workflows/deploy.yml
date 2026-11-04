@@ -20,6 +20,8 @@ jobs:
     env:
       # Flip to 'false' at launch to drop the preview banner and footer line.
       PUBLIC_PREVIEW: 'true'
+      # 'true' = `/` shows the coming-soon page and other pages are noindex. Set to 'false' (or remove) at launch.
+      PUBLIC_COMING_SOON: 'true'
     steps:
       - uses: actions/checkout@v4
       - uses: withastro/action@v3

@@ -46,6 +46,10 @@ Do this while porting to Astro; none of these belong on the live site. Items mar
 5. Mobile menu is a dropdown; full-screen menu design exists in the original concept.
 6. Gear and Life pages still show the "Design preview" banner; remove the banner at launch.
 
+## Coming-soon mode (2026-11-04)
+While content is being written, `deploy.yml` sets `PUBLIC_COMING_SOON: 'true'`: `/` and `/tr/` show a short holding page (`src/components/ComingSoon.astro`, minimal header and footer, no nav), every other page is `noindex`, and the sitemap lists only the holding page and privacy. The real home page stays at the unlisted `/preview/`. Locally (`npm run dev`) the flag is off, so `/` is the real home.
+**At launch:** set `PUBLIC_COMING_SOON` to `'false'` (or delete the line) and `PUBLIC_PREVIEW` to `'false'`; delete `src/pages/preview/` if no longer wanted. Everything else is already in place.
+
 ## Go-live gate
 Audit date 2026-11-04. Method: source search of `src/`, `public/`, `.github/` against the Launch cleanup list. NOT verified against `dist/`: `PUBLIC_PREVIEW=false npm run build` could not run here because the local Node is 22.22.2 and Astro 7 needs >=22.23.4 (`engines`). Re-run the dist search once Node is upgraded.
 

@@ -1,0 +1,39 @@
+---
+// Holding page shown at `/` and `/tr/` while PUBLIC_COMING_SOON is 'true'. Real EN and TR copy (no dictionary lookup),
+// existing classes only. Header and footer are the minimal variants: no nav, so nothing leads to sample content.
+import Base from '../layouts/Base.astro';
+import SocialLinks from './SocialLinks.astro';
+import { site } from '../config/site';
+const tr = Astro.currentLocale === 'tr';
+const copy = tr
+  ? {
+      title: 'Burak Özkan — Yakında',
+      description: 'Burak Özkan’ın kişisel sitesi: İstanbul’da Technical Architect. Çok yakında açılıyor.',
+      kicker: 'Technical Architect, İstanbul',
+      headline: 'Tasarladığım sistemler, ürettiğim şeyler ve hatırlamak istediğim hayat için kişisel bir alan.',
+      body: 'Site çok yakında açılıyor. Paylaşmadan önce gerçek vaka çalışmaları, projeler ve notlarla dolduruyorum.',
+      status: 'Yakında',
+      contact: 'O zamana kadar yazabilirsin:',
+    }
+  : {
+      title: 'Burak Özkan — Coming soon',
+      description: 'Personal site of Burak Özkan, Technical Architect in Istanbul. Opening soon.',
+      kicker: 'Technical Architect, Istanbul',
+      headline: 'A personal space for the systems I design, the things I build, and the life I want to remember.',
+      body: 'The site opens soon. I am filling it with real case studies, projects and notes before I share it.',
+      status: 'Coming soon',
+      contact: 'Until then, you can write to',
+    };
+---
+<Base title={copy.title} rawTitle description={copy.description} minimal nav={null}>
+<section style="padding: 96px 0 120px">
+  <div class="wrap col" style="gap: 24px; max-width: 820px">
+    <p class="small" style="display: flex; gap: 12px; align-items: center"><span style="display: inline-block; width: 28px; height: 1px; background: var(--orange)"></span>{copy.kicker}</p>
+    <h1 class="h1" style="font-size: 52px; max-width: 760px">{copy.headline}</h1>
+    <p class="body-l muted" style="max-width: 560px">{copy.body}</p>
+    <p><span class="tag warm">{copy.status}</span></p>
+    <p class="small">{copy.contact} <a class="link" href={`mailto:${site.email}`}>{site.email}</a></p>
+    <div class="hero-actions"><SocialLinks /></div>
+  </div>
+</section>
+</Base>

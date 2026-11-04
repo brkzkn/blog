@@ -29,6 +29,10 @@ export const site = {
   },
 };
 
+// Coming-soon mode: `/` shows a short holding page, every other page is noindex and the real home is at /preview/.
+// Off unless PUBLIC_COMING_SOON is 'true' (deploy.yml), so local development shows the real site.
+export const comingSoon = String(import.meta.env.PUBLIC_COMING_SOON ?? '') === 'true';
+
 export const enabledSocials = site.socials.filter((s) => s.enabled);
 export const social = (id: Social['id']): Social | undefined => site.socials.find((s) => s.id === id && s.enabled);
 export const analyticsEnabled = import.meta.env.PROD && site.analytics.cloudflareToken !== '';
