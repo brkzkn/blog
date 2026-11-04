@@ -19,6 +19,10 @@ host.innerHTML=groups.map(g=>{
 // the line should run through a section, not between sections
 host.querySelectorAll('.review-stream').forEach(s=>{const a=s.querySelectorAll('.fe-entry');a[0].classList.add('is-first');a[a.length-1].classList.add('is-last')});
 const toc=document.querySelector('[data-review-toc]');
-if(toc)toc.innerHTML='<p class="sidebar-kicker">TÜRE GİT</p>'+groups.map(g=>`<a href="#type-${g.type}"><span>${esc(typeLabels[g.type])}</span><span class="sidebar-count">${g.variants.length}</span></a>`).join('');
+if(toc)toc.innerHTML='<p class="sidebar-kicker" lang="tr">TÜRE GİT</p>'+groups.map(g=>`<a href="#type-${g.type}"><span>${esc(typeLabels[g.type])}</span><span class="sidebar-count">${g.variants.length}</span></a>`).join('');
+// entry titles sit under the type heading (h2): expose them as level 3 without changing the markup the feed CSS targets
+host.querySelectorAll('.review-stream h2').forEach(h=>h.setAttribute('aria-level','3'));
+// current section in the TOC
+if(toc&&'IntersectionObserver'in window){const links=[...toc.querySelectorAll('a')];const io=new IntersectionObserver(es=>{es.forEach(e=>{if(!e.isIntersecting)return;links.forEach(a=>{if(a.getAttribute('href')==='#'+e.target.id)a.setAttribute('aria-current','true');else a.removeAttribute('aria-current')})})},{rootMargin:'0px 0px -70% 0px'});host.querySelectorAll('.review-type').forEach(t=>io.observe(t))}
 R.mountLightbox(host,id=>all.find(e=>e.id===id).photos);
 })();

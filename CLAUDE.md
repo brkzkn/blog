@@ -71,4 +71,4 @@ Thoughtful, clear, personal, technically credible, calm. No marketing language: 
 - 15+ years in software, 8 as an architect; .NET, Kafka, PostgreSQL, Kubernetes. Comfortable with code; do not over-explain.
 - Comfortable in Turkish and English; will often write prompts in Turkish. Reply in the language he uses.
 - Had a WordPress blog that went silent for 4–5 years; he closed it. Low-friction publishing is the whole point of this project.
-- Active elsewhere only on LinkedIn and Instagram; those are the only social links to show.
+- Active elsewhere on LinkedIn, Instagram and GitHub; those are the only social links to show (GitHub added 2026-11-04 at the owner's request).
