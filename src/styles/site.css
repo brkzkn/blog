@@ -191,12 +191,6 @@ a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(-
 .filters>.unavailable{cursor:default}
 .span2{grid-column:span 2}.span9{grid-column:span 9}.span10{grid-column:span 10}
 @media (max-width:1000px){.span2,.span9,.span10{grid-column:span 12}}
-.sidebar-subscribe h2{margin-bottom:10px}
-.sidebar-subscribe .small{margin-bottom:14px}
-.sidebar-subscribe .subscribe-row{display:flex;gap:8px;flex-wrap:wrap}
-.sidebar-subscribe .subscribe-row .journal-search-field{flex:1;min-width:160px}
-.sidebar-subscribe .subscribe-row .btn{min-height:46px;border-radius:5px}
-.sidebar-subscribe .tiny{margin-top:10px}
 .sidebar-elsewhere{margin-top:2px}
 .sidebar-elsewhere .btn{border-radius:5px;border-color:var(--line2);color:var(--ink)}
 .sidebar-elsewhere .btn:hover{border-color:var(--orange);color:var(--orange)}

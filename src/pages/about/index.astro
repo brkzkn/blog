@@ -2,6 +2,9 @@
 // profile.html. Career, focus and contact blocks are page markup; the "Away from the keyboard" prose is the `about` page entry.
 import { getEntry, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import { site, social } from '../../config/site';
+const linkedin = social('linkedin');
+const github = social('github');
 
 const about = await getEntry('pages', 'about');
 if (!about) throw new Error('src/content/pages/about.md is missing');
@@ -21,8 +24,8 @@ const origin = lang === 'tr' ? 'Written in Turkish' : 'Written in English';
       <div class="row about-actions">
         <a class="btn primary" href="#contact">Get in touch</a>
         <a class="btn unavailable">Download CV (PDF)</a>
-        <a class="btn unavailable">LinkedIn</a>
-        <a class="btn" href="https://github.com" target="_blank" rel="noopener noreferrer">GitHub</a>
+        {linkedin && <a class="btn" href={linkedin.href} target="_blank" rel="noopener noreferrer">{linkedin.label}</a>}
+        {github && <a class="btn" href={github.href} target="_blank" rel="noopener noreferrer">{github.label}</a>}
       </div>
     </div>
   </div>
@@ -69,9 +72,9 @@ const origin = lang === 'tr' ? 'Written in Turkish' : 'Written in English';
   <div class="wrap grid">
     <div class="span4"><h2 class="h2" id="contact">Get in touch</h2></div>
     <div class="span8 about-contact" id="social-profiles">
-      <div class="panel about-stack"><span class="tiny">Email</span><a class="link about-contact-link" href="mailto:hello@burakozkan.net">hello@burakozkan.net</a><span class="small">Best for anything longer than a sentence.</span></div>
-      <div class="panel about-stack"><span class="tiny">LinkedIn</span><a class="link unavailable about-contact-link">[/in/your-handle]</a><span class="small">Work, roles, the occasional post.</span></div>
-      <div class="panel about-stack"><span class="tiny">GitHub</span><a class="link about-contact-link" href="https://github.com" target="_blank" rel="noopener noreferrer">github.com/[your-handle]</a><span class="small">Experiments and printable parts.</span></div>
+      <div class="panel about-stack"><span class="tiny">Email</span><a class="link about-contact-link" href={`mailto:${site.email}`}>{site.email}</a><span class="small">Best for anything longer than a sentence.</span></div>
+      {linkedin && <div class="panel about-stack"><span class="tiny">LinkedIn</span><a class="link about-contact-link" href={linkedin.href} target="_blank" rel="noopener noreferrer">{linkedin.display}</a><span class="small">Work, roles, the occasional post.</span></div>}
+      {github && <div class="panel about-stack"><span class="tiny">GitHub</span><a class="link about-contact-link" href={github.href} target="_blank" rel="noopener noreferrer">{github.display}</a><span class="small">Experiments and printable parts.</span></div>}
       <div class="panel tint about-cv"><div class="about-stack"><h3 class="about-cv-title">Curriculum vitae</h3><span class="small">Two pages, updated October 2026</span></div><a class="btn sm primary unavailable">Download PDF</a></div>
     </div>
   </div>

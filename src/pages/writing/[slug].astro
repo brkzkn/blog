@@ -4,6 +4,7 @@
 import { Image } from 'astro:assets';
 import { render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import { site } from '../../config/site';
 import '../../styles/writing.css';
 import {
   getWriting, writingMeta, longDate, shortDate, isoDate, originTitle, postSlug, isPreview, SAMPLE_RELATED,
@@ -55,7 +56,7 @@ const leadAlt = d.alt[0] ?? 'Lead image';
   <div class="wrap article-layout aside-first">
     <aside class="article-aside sticky">
       {toc.length > 1 && <nav class="toc" aria-label="In this post"><p class="tiny">In this post</p><ol>{toc.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}</ol></nav>}
-      <div class="share"><p class="tiny">Share</p><span aria-live="polite"><button type="button" class="copy-link link">Copy link</button></span><span class="unavailable link">LinkedIn</span></div>
+      <div class="share"><p class="tiny">Share</p><span aria-live="polite"><button type="button" class="copy-link link">Copy link</button></span><a class="link" href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(new URL(`/notes/${slug}/`, Astro.site).href)}`} target="_blank" rel="noopener noreferrer">LinkedIn</a></div>
     </aside>
     <div class="article-body prose">
       <Content />
@@ -67,7 +68,7 @@ const leadAlt = d.alt[0] ?? 'Lead image';
   <div class="wrap">
     <div class="article-close-row">
       <div class="row byline-tags"><span class="small">Tagged</span>{d.tags.map((t) => <span class="tag unavailable" data-no-label>{t}</span>)}</div>
-      <a class="link" href={`mailto:hello@burakozkan.net?subject=${encodeURIComponent(`Re: ${d.title}`)}`}>Reply by email</a>
+      <a class="link" href={`mailto:${site.email}?subject=${encodeURIComponent(`Re: ${d.title}`)}`}>Reply by email</a>
     </div>
   </div>
 </section>

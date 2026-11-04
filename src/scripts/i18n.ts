@@ -21,11 +21,15 @@ export function applyLanguage(){const lang=prefs.lang;document.documentElement.l
  const metaDesc=document.querySelector('meta[name=description]');if(metaDesc){if(!metaRecord||metaDesc.content!==metaRecord.last)metaRecord={en:metaDesc.content,last:metaDesc.content};const out=lang==='tr'?translate(metaRecord.en):metaRecord.en;if(metaDesc.content!==out)metaDesc.content=out;metaRecord.last=out}
  syncButtons();document.querySelectorAll('[data-search]').forEach(x=>{const journal=x.dataset.searchScope==='journal';x.placeholder=journal?(lang==='tr'?'Not, gezi veya projelerde ara…':'Search notes, trips, projects…'):(lang==='tr'?'Yazılarda ara…':'Search writing…');x.setAttribute('aria-label',journal?(lang==='tr'?'Günlükte ara':'Search the journal'):(lang==='tr'?'Yazılarda ara':'Search writing previews'))});
 }
+// The language is the URL (/ = English, /tr/ = Turkish, ADR-006). The toggle stores the choice and opens the other
+// language's version of the same page; opening a URL never changes the stored choice and never redirects.
 export function initLanguage() {
   const languageButton = document.querySelector('#language-toggle');
   if (languageButton) languageButton.addEventListener('click', () => {
-    prefs.lang = prefs.lang === 'tr' ? 'en' : 'tr';
-    try { localStorage.setItem(keyLang, prefs.lang); } catch {}
-    applyLanguage();
+    const next = prefs.lang === 'tr' ? 'en' : 'tr';
+    try { localStorage.setItem(keyLang, next); } catch {}
+    const { pathname, search, hash } = location;
+    const en = pathname === '/tr' ? '/' : pathname.startsWith('/tr/') ? pathname.slice(3) : pathname;
+    location.assign((next === 'tr' ? '/tr' + en : en) + search + hash);
   });
 }

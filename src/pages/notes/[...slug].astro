@@ -3,6 +3,7 @@
 // Prev/next stay within the same type: no links across content types, omitted when there is none.
 import { md } from '../../lib/md';
 import Base from '../../layouts/Base.astro';
+import { site } from '../../config/site';
 import OriginChip from '../../components/life/OriginChip.astro';
 import { getPosts, postSlug, postUrl, type Post } from '../../lib/posts';
 import { bodyParts, postHeading, plainText, feedTypeLabels, fixHref, langNames } from '../../lib/feed';
@@ -89,7 +90,7 @@ const place = d.place?.name;
         <div class="row">
           <button type="button" class="copy-link link" id="copy-link">Copy link</button>
           <span class="tiny copy-status" id="copy-status" role="status" aria-live="polite"></span>
-          <a class="link" href={`mailto:hello@burakozkan.net?subject=${encodeURIComponent('Re: ' + pageTitle)}`}>Reply by email</a>
+          <a class="link" href={`mailto:${site.email}?subject=${encodeURIComponent('Re: ' + pageTitle)}`}>Reply by email</a>
         </div>
       </div>
 

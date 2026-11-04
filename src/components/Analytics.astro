@@ -1,0 +1,7 @@
+---
+// Cloudflare Web Analytics beacon: the only analytics on the site (CLAUDE.md exception, ADR-006).
+// Cookieless, no cross-site tracking. Rendered only in production builds AND only when a real token is configured
+// (site.analytics.cloudflareToken in src/config/site.ts); with no token nothing is rendered, so there is never a placeholder token in the HTML.
+import { site, analyticsEnabled } from '../config/site';
+---
+{analyticsEnabled && <script is:inline type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon={JSON.stringify({ token: site.analytics.cloudflareToken })}></script>}

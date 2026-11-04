@@ -8,3 +8,7 @@ backups/
 .env
 .env.production
 .idea/
+
+# Owner content-collection plan and photo inbox (private)
+ICERIK-TOPLAMA-PLANI.md
+_inbox/

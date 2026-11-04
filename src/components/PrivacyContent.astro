@@ -1,0 +1,45 @@
+---
+// Privacy notice text, written in both languages (the first fully translated page; see src/i18n/translated.ts).
+// The analytics paragraph is rendered only when the Cloudflare beacon is actually enabled in this build.
+import { site, analyticsEnabled } from '../config/site';
+interface Props { lang: 'en' | 'tr' }
+const { lang } = Astro.props;
+const mail = `mailto:${site.email}`;
+---
+{lang === 'en' ? (
+  <div class="prose stack-24">
+    <p>This is a personal site. It has no accounts, no comments, no advertising and no tracking of individual visitors. Here is everything that touches your data.</p>
+    <h3 class="h3">Hosting</h3>
+    <p>The site is static and served by GitHub Pages, with DNS by Cloudflare. Like any web host, they receive your IP address and request details when you load a page, and may keep standard server logs. I do not have access to those logs.</p>
+    {analyticsEnabled && <>
+      <h3 class="h3">Analytics</h3>
+      <p>I use Cloudflare Web Analytics to see how many people visit and which pages they read. Cloudflare describes it as privacy-first: it sets no cookies, does not use local storage for tracking and does not fingerprint visitors or build profiles across sites. I only see aggregate numbers such as page views, referrers and countries. No other analytics, advertising or tracking scripts run here.</p>
+    </>}
+    <h3 class="h3">Fonts</h3>
+    <p>Headlines and text use Newsreader and IBM Plex Sans, loaded from Google Fonts. Your browser therefore requests them from Google, which receives your IP address.</p>
+    <h3 class="h3">Stored in your browser</h3>
+    <p>Two preferences are saved in your browser's local storage: the theme (light or dark) and the language you chose with the toggle. They never leave your device and carry no personal data. Clearing site data removes them.</p>
+    <h3 class="h3">Email</h3>
+    <p>If you write to <a class="link" href={mail}>{site.email}</a>, the message is forwarded to my personal mailbox. I use it only to reply, and I do not add anyone to a list. There is no newsletter at the moment.</p>
+    <h3 class="h3">Questions</h3>
+    <p>Write to the same address if you want to know more, or want something removed.</p>
+  </div>
+) : (
+  <div class="prose stack-24">
+    <p>Burası kişisel bir site. Hesap, yorum, reklam ve tek tek ziyaretçileri izleme yok. Verine dokunan her şey aşağıda.</p>
+    <h3 class="h3">Barındırma</h3>
+    <p>Site statik ve GitHub Pages üzerinden yayınlanıyor, DNS Cloudflare'de. Her web barındırıcısı gibi onlar da bir sayfayı yüklediğinde IP adresini ve istek ayrıntılarını alır, olağan sunucu kayıtları tutabilir. Bu kayıtlara erişimim yok.</p>
+    {analyticsEnabled && <>
+      <h3 class="h3">Analitik</h3>
+      <p>Kaç kişinin geldiğini ve hangi sayfaların okunduğunu görmek için Cloudflare Web Analytics kullanıyorum. Cloudflare bunu gizlilik öncelikli olarak tanımlıyor: çerez bırakmıyor, izleme için yerel depolama kullanmıyor, ziyaretçilerin parmak izini çıkarmıyor ve siteler arası profil oluşturmuyor. Yalnızca sayfa görüntüleme, yönlendiren site ve ülke gibi toplu sayıları görüyorum. Burada başka bir analitik, reklam veya izleme betiği çalışmıyor.</p>
+    </>}
+    <h3 class="h3">Yazı tipleri</h3>
+    <p>Başlıklar ve metin Newsreader ve IBM Plex Sans ile gösteriliyor, ikisi de Google Fonts'tan yükleniyor. Bu yüzden tarayıcın onları Google'dan ister ve Google IP adresini alır.</p>
+    <h3 class="h3">Tarayıcında saklananlar</h3>
+    <p>Tarayıcının yerel depolamasında iki tercih tutulur: tema (açık veya koyu) ve düğmeyle seçtiğin dil. Cihazından çıkmazlar, kişisel veri taşımazlar. Site verilerini temizlediğinde silinirler.</p>
+    <h3 class="h3">E-posta</h3>
+    <p><a class="link" href={mail}>{site.email}</a> adresine yazarsan mesaj kişisel posta kutuma yönlendirilir. Yalnızca yanıt vermek için kullanırım, kimseyi bir listeye eklemem. Şu anda bülten yok.</p>
+    <h3 class="h3">Sorular</h3>
+    <p>Daha fazlasını öğrenmek veya bir şeyin kaldırılmasını istemek için aynı adrese yazabilirsin.</p>
+  </div>
+)}

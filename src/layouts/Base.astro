@@ -8,11 +8,18 @@
 //   originalLang     'en' | 'tr' -> <main data-original-lang>; set on every page that shows content with an original language
 //   nav              override the active nav item ('home'|'work'|'projects'|'life'|'gear'|'writing'|'about'|null);
 //                    default is computed from Astro.url (/notes/ and /life/* count as Life)
-//   canonical        absolute or site-relative canonical URL; default is the current path on https://burakozkan.net
+//   canonical        absolute or site-relative canonical URL (English path); default is the current path on https://burakozkan.net
+// Locale (ADR-006): Astro.currentLocale is 'tr' for /tr/* pages. A /tr/ page without a real translation (see
+// src/i18n/translated.ts) is a fallback: English body, Turkish interface, noindex, canonical = the English page, no hreflang.
+// Root-relative hrefs in the page body are prefixed with /tr/ here, once, for every page.
 // Slots: default (inside <main>) and `head` (extra <head> elements, e.g. page-specific scripts).
 import '../styles/site.css';
 import Header, { type NavSection } from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import Analytics from '../components/Analytics.astro';
+import { site } from '../config/site';
+import { stripLocale, localizePath, localizeHtml, isTranslated, type Locale } from '../i18n';
+import { translations } from '../scripts/i18n/tr';
 
 interface Props {
   title: string;
@@ -32,7 +39,8 @@ const {
   canonical,
 } = Astro.props;
 
-const path = Astro.url.pathname;
+const locale: Locale = Astro.currentLocale === 'tr' ? 'tr' : 'en';
+const path = stripLocale(Astro.url.pathname); // English path, also for real /tr/ pages
 const computed: NavSection =
   path === '/' ? 'home'
   : path.startsWith('/work/') ? 'work'
@@ -43,34 +51,56 @@ const computed: NavSection =
   : path.startsWith('/about/') ? 'about'
   : null;
 const current = Astro.props.nav !== undefined ? Astro.props.nav : computed;
-const fullTitle = rawTitle ? title : `${title} — Burak Özkan`;
-const canonicalUrl = new URL(canonical ?? path, Astro.site).href;
+const translated = isTranslated(path);
+const isFallback = locale === 'tr' && !translated;
+const t = (text: string) => (locale === 'tr' ? translations[text] ?? text : text);
+const shownTitle = t(title);
+const shownDescription = t(description);
+const fullTitle = rawTitle ? shownTitle : `${shownTitle} — ${site.name}`;
+const abs = (p: string) => new URL(p, Astro.site).href;
+const enUrl = abs(canonical ?? path);
+const trUrl = abs(localizePath(canonical ?? path, 'tr'));
+const canonicalUrl = locale === 'tr' && translated ? trUrl : enUrl;
+const robots = noindex ? 'noindex' : isFallback ? 'noindex,follow' : undefined;
+const bodyHtml = localizeHtml(await Astro.slots.render('default'), locale);
 const preview = import.meta.env.PUBLIC_PREVIEW !== 'false';
 ---
 <!doctype html>
-<html lang="en">
+<html lang={locale}>
 <head>
-<script is:inline>(function(){let t='system',l='en';try{t=localStorage.getItem('burak-theme')||t;l=localStorage.getItem('burak-language')||l}catch{}if(!['light','dark','system'].includes(t))t='system';if(!['en','tr'].includes(l))l='en';window.__burakPrefs={theme:t,lang:l};document.documentElement.lang=l;document.documentElement.dataset.theme=t==='system'?(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'):t})();</script>
+<script is:inline>(function(){let t='system';try{t=localStorage.getItem('burak-theme')||t}catch{}if(!['light','dark','system'].includes(t))t='system';window.__burakPrefs={theme:t,lang:document.documentElement.lang==='tr'?'tr':'en'};document.documentElement.dataset.theme=t==='system'?(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'):t})();</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{fullTitle}</title>
-<meta name="description" content={description}>
+<meta name="description" content={shownDescription}>
 <link rel="canonical" href={canonicalUrl}>
-{noindex && <meta name="robots" content="noindex">}
+{robots && <meta name="robots" content={robots}>}
+{translated && <link rel="alternate" hreflang="en" href={enUrl}>}
+{translated && <link rel="alternate" hreflang="tr" href={trUrl}>}
+{translated && <link rel="alternate" hreflang="x-default" href={enUrl}>}
+<meta property="og:type" content="website">
+<meta property="og:site_name" content={site.name}>
+<meta property="og:title" content={fullTitle}>
+<meta property="og:description" content={shownDescription}>
+<meta property="og:url" content={canonicalUrl}>
+<meta property="og:locale" content={locale === 'tr' ? 'tr_TR' : 'en_US'}>
+{translated && <meta property="og:locale:alternate" content={locale === 'tr' ? 'en_US' : 'tr_TR'}>}
+<meta name="twitter:card" content="summary">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap">
-<link rel="alternate" type="application/rss+xml" title="Burak Özkan" href="/rss.xml">
+<link rel="alternate" type="application/rss+xml" title={site.name} href="/rss.xml">
 <slot name="head" />
 </head>
 <body>
-<a class="skip-link" href="#main">Skip to content</a>
+<a class="skip-link" href="#main">{t('Skip to content')}</a>
 <Header current={current} />
-{preview && <div class="demo-notice">DESIGN PREVIEW · Stories, product ownership, career examples and metrics are sample content.</div>}
+{preview && <div class="demo-notice">{t('DESIGN PREVIEW · Stories, product ownership, career examples and metrics are sample content.')}</div>}
 <main id="main" data-original-lang={originalLang}>
-<slot />
+<Fragment set:html={bodyHtml} />
 </main>
 <Footer />
+<Analytics />
 <script>import '../scripts/main.ts';</script>
 </body>
 </html>

@@ -28,7 +28,7 @@ Every route ends with a trailing slash (`trailingSlash: 'always'`, `build.format
 
 Rules from the content model stay: any post is served at `/notes/<slug>/` regardless of type (types are rendering hints, not paths); long posts also list under `/writing/`; `/gear/<slug>/`, `/now/`, `/rss.xml` follow the content model. The slug is the post folder name without its date prefix (`2026-10-30-kadikoy-kalamar` gives `kadikoy-kalamar`).
 
-**Language routes.** `/tr/...` mirrors are specified but Phase 1 ships English routes only, with the client-side EN/TR UI toggle. A post that has a sibling `index.tr.md` / `index.en.md` gets `/tr/` routes later; until then the single file is served at its normal route with its original language marked.
+**Language routes.** Implemented in ADR-006: English at `/`, Turkish at `/tr/`, every route available in both. (Original text: `/tr/` mirrors were deferred and the toggle was client-side only.)
 
 ## Consequences
 - Links survive a later move of content storage; slugs are stable identifiers.

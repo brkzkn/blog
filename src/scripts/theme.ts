@@ -33,8 +33,11 @@ export function applyTheme(): void {
 // Registers listeners only; main.ts calls applyTheme() afterwards, as the prototype did.
 export function initTheme(): void {
   themeButton()?.addEventListener('click', () => {
-    prefs.theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-    try { localStorage.setItem(keyTheme, prefs.theme); } catch {}
+    // Icon toggle between the two visible themes. Picking the theme the system already uses goes back to 'system'
+    // (stored value removed), so Light / Dark / System are all reachable without a dropdown.
+    const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+    prefs.theme = next === (media.matches ? 'dark' : 'light') ? 'system' : next;
+    try { prefs.theme === 'system' ? localStorage.removeItem(keyTheme) : localStorage.setItem(keyTheme, prefs.theme); } catch {}
     applyTheme();
   });
   media.addEventListener('change', () => { if (prefs.theme === 'system') applyTheme(); });

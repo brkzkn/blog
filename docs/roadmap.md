@@ -39,7 +39,7 @@ Do this while porting to Astro; none of these belong on the live site. Items mar
 - **Sample copy on About, Work, Life, Gear, Projects pages** (Design-preview banner, sample case studies, `mock` tags): replace as real content arrives (Phase 2).
 
 ## Open issues from the prototype review
-1. Subscribe form not connected.
+1. Subscribe form removed from the home sidebar (2026-11-04). **TODO after launch:** pick a provider (Buttondown or Kit), re-add the `sidebar-subscribe` module (CSS was deleted; restore from git history `f284334`), wire the form, add the TR strings.
 2. Gear/Life filters visual only.
 3. Placeholder images outside the home hero.
 4. TR dictionary does not cover all page copy (by design; content translated at publish time).
@@ -52,8 +52,8 @@ Audit date 2026-11-04. Method: source search of `src/`, `public/`, `.github/` ag
 ### BLOCKERS (owner must supply or decide)
 1. All 38 content entries are `sample: true`, and nothing filters them in production. `getPosts()` (`src/lib/posts.ts`) only hides `draft`; only `rss.xml.ts` excludes samples. With `PUBLIC_PREVIEW=false` the site still publishes 100% sample posts, case study and gear. Decide: add a prod filter on `sample` (hides all) or replace entries with real ones.
 2. Bracketed placeholders in shipped content: About CV rows `[Company]` x4, `[/in/your-handle]`, `github.com/[your-handle]`; gear titles (`[NAS model]`, `[Laptop model]`, `[Monitor model]`, `[Mechanical keyboard]`, `[Mini PC]`, `[Previous laptop]`); `projects/index` and `smart-home` model names; restaurant page (`[Reservation link or phone number]`, `[opening hours]`, `[price per person...]`, `[nearest stop]`); culture diary (`[Film one]`, `[Series title]`, `[Artist]`, `[Exhibition name]`...); case study `[weeks]`, `[orders/day]`, `[metric]`; `[Restaurant name]` in kadikoy-kalamar.tr.md; `[Title]`/`[Author]` in the book note.
-3. Social links are bare roots: `https://www.linkedin.com`, `https://www.instagram.com`, `https://github.com` (home sidebar, About). Owner must supply real profile URLs. LinkedIn on About and the CV PDF are `unavailable` (no target).
-4. Subscribe form not connected ("Subscriptions are not connected yet in this preview." shown regardless of the flag). Wire a provider or remove the block.
+3. ~~Social links are bare roots~~ LinkedIn and GitHub now point at the real profiles from `src/config/site.ts`; Instagram is hidden (private account, `enabled: false`). The CV PDF is still `unavailable`.
+4. ~~Subscribe form not connected~~ Removed from the home page (2026-11-04); re-adding is a post-launch TODO (Open issue 1).
 5. Privacy review of images: `public/assets/images/` is mock art, which I could not verify for faces. Posts `the-twins-arrive` and `first-day-at-nursery` mention "two daughters" (no names found; acceptable) but need the owner's image check when real photos replace mocks.
 6. Node on the build machine and CI: local Node must be upgraded to >=22.23.4 to build at all.
 

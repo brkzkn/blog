@@ -52,7 +52,9 @@ Thoughtful, clear, personal, technically credible, calm. No marketing language: 
 
 - Before changing a page, open `assets/site.css` and reuse an existing class; add new rules at the end of the file under a dated comment.
 - Every change that touches layout must be checked at 1440px, 1000px and 390px, in light and dark, in EN and TR. `site.js` translates by exact text match: when you add UI text, add its Turkish string to the dictionary at the bottom of `site.js`.
-- Do not introduce external scripts, trackers or ads. Fonts from Google Fonts are the only external dependency.
+- Do not introduce external scripts, trackers or ads. Exceptions (owner decision, 2026-11-04): Google Fonts, and the Cloudflare Web Analytics beacon (cookieless; rendered by `src/components/Analytics.astro` only when `PUBLIC_CF_ANALYTICS_TOKEN` is set). No other analytics, tracking or advertising script may be added.
+- Contact address and social profile URLs live in `src/config/site.ts`; do not hard-code them in pages. Instagram is `enabled: false` (private account) until the owner says otherwise. The owner's personal mailbox never goes into the repo: `hello@burakozkan.net` is a Cloudflare Email Routing alias.
+- Language is the URL: English at `/`, Turkish at `/tr/` (ADR-006). A `/tr/` page without a real translation is a noindex fallback; register a real one in `src/i18n/translated.ts`.
 - Mock images are illustrations generated for layout; do not describe them to the owner as photos.
 - Commit messages: imperative, one line, what and why (`Add gear filters; previous ones were unstyled spans`).
 - When a decision is hard to reverse (framework, URL scheme, content storage, hosting), write `docs/decisions/ADR-NNN-title.md` first.
