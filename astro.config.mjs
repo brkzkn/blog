@@ -4,7 +4,7 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://burakozkan.net',
+  site: 'https://brkzkn.github.io',
   output: 'static',
   trailingSlash: 'always',
   build: { format: 'directory' },

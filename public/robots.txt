@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://burakozkan.net/sitemap-index.xml
+Sitemap: https://brkzkn.github.io/sitemap-index.xml
